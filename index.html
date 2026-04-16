@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>РАСЧЕТ СТОИМОСТИ ОКОН ПВХ</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'blue-50': '#eff6ff',
+                        'indigo-100': '#e0e7ff',
+                        'green-50': '#f0fdf4',
+                        'emerald-50': '#ecfdf5',
+                        'green-200': '#bbf7d0',
+                        'gold': '#D4AF37',
+                        'dark-bg': '#2d2d2d',
+                        'dark-card': '#3a3a3a',
+                        'dark-text': '#ffffff',
+                        'gold-highlight': '#F5C54B'
+                    },
+                    fontFamily: {
+                        'serif': ['Georgia', 'serif'],
+                        'sans': ['Inter', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .logo-container {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 16px;
+        }
+        .logo-placeholder {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 20px;
+        }
+        .result-item {
+            transition: all 0.2s ease;
+        }
+        .result-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+        }
+        .highlight-text {
+            color: #F5C54B;
+            font-weight: 600;
+        }
+        .checkmark::before {
+            content: "✓";
+            margin-right: 8px;
+            color: #F5C54B;
+            font-weight: bold;
+        }
+        .feature-box {
+            border: 1px solid #555;
+            background: rgba(58, 58, 58, 0.3);
+            transition: all 0.2s ease;
+        }
+        .feature-box:hover {
+            background: rgba(58, 58, 58, 0.5);
+            border-color: #F5C54B;
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-4">
+    <div class="max-w-4xl mx-auto">
+        <div class="bg-white rounded-2xl shadow-xl p-6 md:p-8">
+            <h1 class="text-3xl md:text-4xl font-bold text-center text-gray-800 mb-8">
+                РАСЧЕТ СТОИМОСТИ ОКОН ПВХ
+            </h1>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                <!-- City Selection -->
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">
+                        Город
+                    </label>
+                    <select id="city" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-base">
+                        <option value="">Выберите город</option>
+                        <option value="СПБ">СПБ</option>
+                        <option value="Пенза">Пенза</option>
+                        <option value="МСК">МСК</option>
+                    </select>
+                </div>
+
+                <!-- Film Type -->
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">
+                        Пленка
+                    </label>
+                    <select id="filmType" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-base">
+                        <option value="">Выберите пленку</option>
+                        <option value="Прозрачная">Прозрачная</option>
+                        <option value="Тонированная">Тонированная</option>
+                    </select>
+                </div>
+
+                <!-- Window Count -->
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">
+                        Количество окон
+                    </label>
+                    <select id="windowCount" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-base">
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                        <option value="6">6</option>
+                        <option value="7">7</option>
+                        <option value="8">8</option>
+                        <option value="9">9</option>
+                        <option value="10">10</option>
+                    </select>
+                </div>
+
+                <!-- Coefficient -->
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">
+                        Коэффициент расчета
+                    </label>
+                    <input type="number" id="coefficient" step="0.1" value="1.1" 
+                           class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-base"
+                           min="1" max="2">
+                </div>
+
+                <!-- Fastening -->
+                <div class="md:col-span-2">
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">
+                        Крепеж
+                    </label>
+                    <select id="fastening" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-base">
+                        <option value="">Выберите крепеж</option>
+                        <option value="люверсы">люверсы</option>
+                        <option value="пластиковые ремешки">пластиковые ремешки</option>
+                        <option value="полиамидные скобы">полиамидные скобы</option>
+                        <option value="металлические скобы">металлические скобы</option>
+                        <option value="французские замки">французские замки</option>
+                    </select>
+                </div>
+
+                <!-- Zipper Input (Number with 2 decimal places) -->
+                <div class="md:col-span-2">
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">
+                        Молния (пог. м)
+                    </label>
+                    <input type="number" id="zipperLength" step="0.01" value="0.00"
+                           class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-base"
+                           min="0" placeholder="0.00">
+                </div>
+            </div>
+
+            <!-- Dimensions Input -->
+            <div id="dimensionsContainer" class="mb-8">
+                <h3 class="text-lg font-semibold text-gray-800 mb-4">Размеры окон (м)</h3>
+                <div id="dimensionsInputs" class="space-y-4">
+                    <!-- Will be populated by JavaScript -->
+                </div>
+            </div>
+
+            <!-- Results -->
+            <div id="resultsContainer" class="hidden">
+                <!-- Коммерческое предложение -->
+                <div class="bg-dark-bg rounded-xl shadow-2xl p-6 border border-gold">
+                    <!-- Логотип компании -->
+                    <div class="flex justify-center mb-6">
+                        <img src="C:\Users\cilit\Documents\АНДРОИД\рабочие\Чертежные программы\Логотип Основной на фоне.png" alt="Триколория Комфорта" style="max-height: 60px; width: auto;">
+                    </div>
+
+                    <div class="border-b-2 border-gold pb-4 mb-6">
+                        <h2 class="text-2xl font-bold text-center text-dark-text">
+                            Результаты расчета мягких окон ПВХ
+                        </h2>
+                    </div>
+
+                    <div id="resultsGrid" class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                        <!-- Will be populated by JavaScript -->
+                    </div>
+
+                    <!-- Additional Information Block -->
+                    <div id="additionalInfo" class="bg-dark-card rounded-lg p-5 border-l-4 border-gold mb-6">
+                        <ul id="infoList" class="text-dark-text leading-relaxed text-base list-none space-y-2">
+                            <!-- Will be populated by JavaScript -->
+                        </ul>
+                    </div>
+
+                    <!-- Contact Information -->
+                    <div class="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg p-5 text-center">
+                        <p class="text-gray-800 font-medium text-base">
+                            Ваш личный менеджер по продажам компании Триколория Комфорта: 
+                            <span class="font-bold">Марина +7 995 601 7892</span> 
+                            <a href="http://www.terrcomfort.ru" target="_blank" class="text-blue-600 hover:underline ml-2">www.terrcomfort.ru</a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div id="noResultsMessage" class="text-center py-8 text-gray-500">
+                <p>Заполните все поля для расчета стоимости</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Price data
+        const priceData = {
+            'Пенза': {
+                'Прозрачная': {
+                    'люверсы': 1600,
+                    'пластиковые ремешки': 1750,
+                    'полиамидные скобы': 1850,
+                    'металлические скобы': 1950,
+                    'французские замки': 2050
+                },
+                'Тонированная': {
+                    'люверсы': 1920,
+                    'пластиковые ремешки': 2100,
+                    'полиамидные скобы': 2220,
+                    'металлические скобы': 2340,
+                    'французские замки': 2460
+                }
+            },
+            'МСК': {
+                'Прозрачная': {
+                    'люверсы': 1600,
+                    'пластиковые ремешки': 1750,
+                    'полиамидные скобы': 1950,
+                    'металлические скобы': 2050,
+                    'французские замки': 2150
+                },
+                'Тонированная': {
+                    'люверсы': 1920,
+                    'пластиковые ремешки': 2100,
+                    'полиамидные скобы': 2340,
+                    'металлические скобы': 2460,
+                    'французские замки': 2580
+                }
+            },
+            'СПБ': {
+                'Прозрачная': {
+                    'люверсы': 1600,
+                    'пластиковые ремешки': 1750,
+                    'полиамидные скобы': 1950,
+                    'металлические скобы': 2050,
+                    'французские замки': 2150
+                },
+                'Тонированная': {
+                    'люверсы': 1920,
+                    'пластиковые ремешки': 2100,
+                    'полиамидные скобы': 2340,
+                    'металлические скобы': 2460,
+                    'французские замки': 2580
+                }
+            }
+        };
+
+        const strapPrice = {
+            'Пенза': 100,
+            'МСК': 100,
+            'СПБ': 100
+        };
+
+        const mountingWoodPrice = {
+            'Пенза': 600,
+            'МСК': 700,
+            'СПБ': 700
+        };
+
+        const mountingMetalPrice = {
+            'Пенза': 800,
+            'МСК': 900,
+            'СПБ': 900
+        };
+
+        const zipperPrice = {
+            'Пенза': 850,
+            'МСК': 850,
+            'СПБ': 850
+        };
+
+        // Custom rounding function for strap cost
+        function roundToNearest100(value) {
+            return Math.floor(value / 100) * 100;
+        }
+
+        // DOM elements
+        const citySelect = document.getElementById('city');
+        const filmTypeSelect = document.getElementById('filmType');
+        const windowCountSelect = document.getElementById('windowCount');
+        const coefficientInput = document.getElementById('coefficient');
+        const fasteningSelect = document.getElementById('fastening');
+        const zipperLengthInput = document.getElementById('zipperLength');
+        const dimensionsInputs = document.getElementById('dimensionsInputs');
+        const resultsContainer = document.getElementById('resultsContainer');
+        const resultsGrid = document.getElementById('resultsGrid');
+        const noResultsMessage = document.getElementById('noResultsMessage');
+        const infoList = document.getElementById('infoList');
+
+        // Initialize dimensions
+        function initializeDimensions() {
+            const count = parseInt(windowCountSelect.value);
+            dimensionsInputs.innerHTML = '';
+            
+            for (let i = 0; i < count; i++) {
+                const div = document.createElement('div');
+                div.className = 'grid grid-cols-1 md:grid-cols-2 gap-4';
+                div.innerHTML = `
+                    <div>
+                        <label class="block text-sm font-medium text-gray-600 mb-1">
+                            Ширина ${i + 1}
+                        </label>
+                        <input type="number" step="0.01" data-index="${i}" data-field="width"
+                               class="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dimension-input"
+                               placeholder="0.00" min="0">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-600 mb-1">
+                            Высота ${i + 1}
+                        </label>
+                        <input type="number" step="0.01" data-index="${i}" data-field="height"
+                               class="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dimension-input"
+                               placeholder="0.00" min="0">
+                    </div>
+                `;
+                dimensionsInputs.appendChild(div);
+            }
+            
+            // Add event listeners to new inputs
+            document.querySelectorAll('.dimension-input').forEach(input => {
+                input.addEventListener('input', calculateResults);
+            });
+        }
+
+        // Get dimensions from inputs
+        function getDimensions() {
+            const dimensions = [];
+            const inputs = document.querySelectorAll('.dimension-input');
+            
+            for (let i = 0; i < inputs.length; i += 2) {
+                const widthInput = inputs[i];
+                const heightInput = inputs[i + 1];
+                dimensions.push({
+                    width: parseFloat(widthInput.value) || 0,
+                    height: parseFloat(heightInput.value) || 0
+                });
+            }
+            
+            return dimensions;
+        }
+
+        // Calculate results
+        function calculateResults() {
+            const city = citySelect.value;
+            const filmType = filmTypeSelect.value;
+            const fastening = fasteningSelect.value;
+            const zipperLength = parseFloat(zipperLengthInput.value) || 0;
+            const coefficient = parseFloat(coefficientInput.value) || 1.1;
+            
+            if (!city || !filmType || !fastening) {
+                resultsContainer.classList.add('hidden');
+                noResultsMessage.classList.remove('hidden');
+                return;
+            }
+
+            const dimensions = getDimensions();
+            
+            // Calculate total area
+            let totalArea = 0;
+            let totalWidth = 0;
+            
+            dimensions.forEach(dim => {
+                totalArea += dim.width * dim.height;
+                totalWidth += dim.width;
+            });
+
+            const totalAreaRounded = Math.round(totalArea * 100) / 100;
+            const finishedArea = totalAreaRounded * coefficient;
+            const finishedAreaRounded = Math.round(finishedArea * 100) / 100;
+
+            // Get PVC window price
+            const pvcPricePerM2 = priceData[city][filmType][fastening] || 0;
+            const pvcTotalPrice = Math.round(finishedAreaRounded * pvcPricePerM2);
+
+            // Calculate strap cost (0 if люверсы)
+            let strapCost = 0;
+            if (fastening !== 'люверсы') {
+                const rawStrapCost = (totalWidth / 0.6) * strapPrice[city];
+                strapCost = roundToNearest100(rawStrapCost);
+            }
+
+            // Calculate zipper cost
+            const zipperCost = Math.round(zipperLength * zipperPrice[city]);
+
+            // Calculate mounting costs with minimum values
+            let woodMountingCost = Math.round(finishedAreaRounded * mountingWoodPrice[city]);
+            let metalMountingCost = Math.round(finishedAreaRounded * mountingMetalPrice[city]);
+            
+            const minMountingCost = city === 'Пенза' ? 5000 : 10000;
+            if (woodMountingCost < minMountingCost) woodMountingCost = minMountingCost;
+            if (metalMountingCost < minMountingCost) metalMountingCost = minMountingCost;
+
+            // Calculate preliminary cost without mounting
+            const preliminaryCost = pvcTotalPrice + strapCost + zipperCost;
+
+            // Display results
+            resultsGrid.innerHTML = `
+                <div class="bg-dark-card p-4 rounded-lg shadow-sm border border-gold result-item">
+                    <p class="text-sm text-dark-text mb-1">Общая площадь окон</p>
+                    <p class="text-xl font-bold text-gold-highlight">${totalAreaRounded} м²</p>
+                </div>
+                
+                <div class="bg-dark-card p-4 rounded-lg shadow-sm border border-gold result-item">
+                    <p class="text-sm text-dark-text mb-1">Площадь готового окна</p>
+                    <p class="text-xl font-bold text-gold-highlight">${finishedAreaRounded} м²</p>
+                </div>
+                
+                <div class="bg-dark-card p-4 rounded-lg shadow-sm border border-gold result-item">
+                    <p class="text-sm text-dark-text mb-1">Стоимость ПВХ окон</p>
+                    <p class="text-xl font-bold text-gold-highlight">${pvcTotalPrice.toLocaleString()} руб</p>
+                </div>
+                
+                <div class="bg-dark-card p-4 rounded-lg shadow-sm border border-gold result-item">
+                    <p class="text-sm text-dark-text mb-1">Стоимость ремешков</p>
+                    <p class="text-xl font-bold text-gold-highlight">${strapCost.toLocaleString()} руб</p>
+                </div>
+                
+                <div class="bg-dark-card p-4 rounded-lg shadow-sm border border-gold result-item">
+                    <p class="text-sm text-dark-text mb-1">Стоимость молнии</p>
+                    <p class="text-xl font-bold text-gold-highlight">${zipperCost.toLocaleString()} руб</p>
+                </div>
+                
+                <div class="bg-dark-card p-4 rounded-lg shadow-sm border border-gold result-item">
+                    <p class="text-sm text-dark-text mb-1">Предварительная стоимость без учета монтажа</p>
+                    <p class="text-xl font-bold text-gold-highlight">${preliminaryCost.toLocaleString()} руб</p>
+                </div>
+                
+                <div class="bg-dark-card p-4 rounded-lg shadow-sm border border-gold result-item">
+                    <p class="text-sm text-dark-text mb-1">Монтаж на дерево${city === 'Пенза' ? ' (не менее 5 000 руб)' : ' (не менее 10 000 руб)'}</p>
+                    <p class="text-xl font-bold text-gold-highlight">${woodMountingCost.toLocaleString()} руб</p>
+                </div>
+                
+                <div class="bg-dark-card p-4 rounded-lg shadow-sm border border-gold result-item md:col-span-2">
+                    <p class="text-sm text-dark-text mb-1">Монтаж на металл${city === 'Пенза' ? ' (не менее 5 000 руб)' : ' (не менее 10 000 руб)'}</p>
+                    <p class="text-xl font-bold text-gold-highlight">${metalMountingCost.toLocaleString()} руб</p>
+                </div>
+            `;
+            
+            // Generate additional information as a bullet list with square markers
+            infoList.innerHTML = '';
+            const bulletStyle = "background: #F5C54B; width: 8px; height: 8px; display: inline-block; margin-right: 12px;";
+
+            function addBullet(text) {
+                const li = document.createElement('li');
+                li.innerHTML = `<span style="${bulletStyle}"></span>${text}`;
+                infoList.appendChild(li);
+            }
+
+            if (city === "СПБ") {
+                addBullet(`Пленка ПВХ 700 микрон с УФ покрытием, морозостойкая,самозатухающая ${filmType.toLowerCase()}`);
+                addBullet(`Крепеж: ${fastening}`);
+                addBullet(`Тракторная молния: ${zipperPrice[city]} руб/пог.м`);
+                addBullet(`Стоимость москитной сетки: 1700 руб/м²`);
+                addBullet(`Стоимость двери из полиуретана: 3300 руб/м²`);
+                addBullet(`Монтаж на деревянную поверхность: ${mountingWoodPrice[city]} руб/м²`);
+                addBullet(`Монтаж на металлическую поверхность: ${mountingMetalPrice[city]} руб/м²`);                	
+            } else if (city === "МСК") {
+                addBullet(`Пленка ПВХ 700 микрон с УФ покрытием, морозостойкая,самозатухающая ${filmType.toLowerCase()}`);
+                addBullet(`Крепеж: ${fastening}`);
+                addBullet(`Тракторная молния: ${zipperPrice[city]} руб/пог.м`);
+                addBullet(`Стоимость москитной сетки: 1500 руб/м²`);
+                addBullet(`Стоимость двери из полиуретана: 3300 руб/м²`);
+                addBullet(`Стоимость подвесной шторы дополнительно к стоимости окна: 3500 руб/пог м ширины окна`);
+                addBullet(`Монтаж на деревянную поверхность: ${mountingWoodPrice[city]} руб/м²`);
+                addBullet(`Монтаж на металлическую поверхность: ${mountingMetalPrice[city]} руб/м²`);		
+                addBullet(`Доставка СДЭК/Яндекс: 1000 руб`);
+            } else if (city === "Пенза") {
+                addBullet(`Пленка ПВХ 700 микрон с УФ покрытием, морозостойкая,самозатухающая ${filmType.toLowerCase()}`);
+                addBullet(`Крепеж: ${fastening}`);
+                addBullet(`Тракторная молния: ${zipperPrice[city]} руб/пог.м`);
+                addBullet(`Стоимость москитной сетки: 1500 руб/м²`);
+                addBullet(`Стоимость двери из полиуретана: 3300 руб/м²`);
+                addBullet(`Стоимость подвесной шторы дополнительно к стоимости окна: 3500 руб/пог м ширины окна`);
+                addBullet(`Монтаж на деревянную поверхность: ${mountingWoodPrice[city]} руб/м²`);
+                addBullet(`Монтаж на металлическую поверхность: ${mountingMetalPrice[city]} руб/м²`);		
+            }
+            
+            resultsContainer.classList.remove('hidden');
+            noResultsMessage.classList.add('hidden');
+        }
+
+        // Event listeners
+        citySelect.addEventListener('change', calculateResults);
+        filmTypeSelect.addEventListener('change', calculateResults);
+        windowCountSelect.addEventListener('change', () => {
+            initializeDimensions();
+            calculateResults();
+        });
+        coefficientInput.addEventListener('input', calculateResults);
+        fasteningSelect.addEventListener('change', calculateResults);
+        zipperLengthInput.addEventListener('input', calculateResults);
+
+        // Initialize
+        initializeDimensions();
+    </script>
+</body>
+</html>
