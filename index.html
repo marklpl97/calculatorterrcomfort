@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>РАСЧЕТ СТОИМОСТИ ОКОН ПВХ — Триколория Комфорта</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- html2pdf library for PDF generation -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" integrity="sha512-GsLlZN/3F2ErC5ifS5QtgpiJtWd43JWSuIgh7mbzZ8zBps+dvLusV+eNQATqgA/HdeKFVgA5v3S/cIrLF7QnIg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script>
         tailwind.config = {
@@ -32,121 +31,73 @@
         }
     </script>
     <style>
-        /* Print / PDF optimization — ensure dark background prints correctly */
-        @media print {
-            body {
-                background: white !important;
-                padding: 0 !important;
-                margin: 0 !important;
-            }
-            .no-print {
-                display: none !important;
-            }
-            .pdf-print-area {
-                background: #2d2d2d !important;
-                -webkit-print-color-adjust: exact !important;
-                print-color-adjust: exact !important;
-
-                /* добавлено для прижатия и равномерности в PDF */
-                margin: 0 !important;
-                padding: 0 !important;
-                box-sizing: border-box;
-                width: 100% !important;
-            }
-            #pdfExportArea {
-                margin: 0 !important;
-                padding: 0 !important;
-                max-width: none !important;
-                width: 100% !important;
-                box-sizing: border-box;
-            }
-            .bg-dark-bg {
-                background-color: #2d2d2d !important;
-                -webkit-print-color-adjust: exact;
-                print-color-adjust: exact;
-
-                /* более компактные внутренние отступы, чтобы всё влезло на лист */
-                padding: 0.25rem 0.5rem !important;
-                margin: 0 !important;
-            }
-            .bg-dark-card {
-                background-color: #3a3a3a !important;
-                -webkit-print-color-adjust: exact;
-                print-color-adjust: exact;
-
-                /* чуть компактнее карточки в PDF */
-                padding: 0.25rem !important;
-            }
-            .border-gold {
-                border-color: #D4AF37 !important;
-            }
-            .text-gold-highlight {
-                color: #F5C54B !important;
-            }
-            .result-item {
-                break-inside: avoid;
-                page-break-inside: avoid;
-            }
-            .border-b-2 {
-                padding-bottom: 0.3rem !important;
-                margin-bottom: 0.5rem !important;
-            }
-        }
         .logo-container {
             display: inline-flex;
             align-items: center;
             justify-content: center;
             margin-bottom: 16px;
         }
-        .result-item {
-            transition: all 0.2s ease;
-        }
-        .result-item:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
-        }
-        .highlight-text {
-            color: #F5C54B;
-            font-weight: 600;
-        }
-        .checkmark::before {
-            content: "✓";
-            margin-right: 8px;
-            color: #F5C54B;
-            font-weight: bold;
-        }
-        .feature-box {
-            border: 1px solid #555;
-            background: rgba(58, 58, 58, 0.3);
-            transition: all 0.2s ease;
-        }
-        .feature-box:hover {
-            background: rgba(58, 58, 58, 0.5);
-            border-color: #F5C54B;
-        }
-        /* custom bullet style for additional info (matches screenshot style) */
-        .custom-bullet {
-            display: inline-block;
-            width: 8px;
-            height: 8px;
-            background-color: #F5C54B;
-            border-radius: 2px;
-            margin-right: 12px;
-            flex-shrink: 0;
-            margin-top: 8px;
-        }
-        .info-list-item {
+        .logo-placeholder {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 12px;
             display: flex;
-            align-items: flex-start;
-            gap: 8px;
-            margin-bottom: 10px;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 20px;
         }
-        .download-btn {
-            transition: all 0.2s ease;
+        @media print {
+            body { background: white !important; padding: 0 !important; margin: 0 !important; }
+            .no-print { display: none !important; }
+            .pdf-print-area {
+                background: #2d2d2d !important;
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+                margin: 0 !important; padding: 0 !important;
+                box-sizing: border-box; width: 100% !important;
+            }
+            #pdfExportArea {
+                margin: 0 !important; padding: 0 !important;
+                max-width: none !important; width: 100% !important;
+                box-sizing: border-box;
+            }
+            .bg-dark-bg {
+                background-color: #2d2d2d !important;
+                -webkit-print-color-adjust: exact; print-color-adjust: exact;
+                padding: 0.25rem 0.5rem !important; margin: 0 !important;
+            }
+            .bg-dark-card {
+                background-color: #3a3a3a !important;
+                -webkit-print-color-adjust: exact; print-color-adjust: exact;
+                padding: 0.25rem !important;
+            }
+            .border-gold { border-color: #D4AF37 !important; }
+            .text-gold-highlight { color: #F5C54B !important; }
+            .result-item { break-inside: avoid; page-break-inside: avoid; }
+            .border-b-2 { padding-bottom: 0.3rem !important; margin-bottom: 0.5rem !important; }
         }
-        .download-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+        .result-item { transition: all 0.2s ease; }
+        .result-item:hover { transform: translateY(-2px); box-shadow: 0 4px 8px rgba(0,0,0,0.3); }
+        .custom-bullet {
+            display: inline-block; width: 8px; height: 8px;
+            background-color: #F5C54B; border-radius: 2px;
+            margin-right: 12px; flex-shrink: 0; margin-top: 8px;
+        }
+        .download-btn { transition: all 0.2s ease; }
+        .download-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0,0,0,0.15); }
+        .qr-container {
+            transition: all 0.3s ease;
+            max-height: 500px;
+            overflow: hidden;
+        }
+        .qr-container.hidden {
+            max-height: 0;
+            padding: 0 !important;
+            margin: 0 !important;
+            border: none !important;
         }
     </style>
 </head>
@@ -157,13 +108,11 @@
             <h1 class="text-3xl md:text-4xl font-bold text-center text-gray-800 mb-8">
                 РАСЧЕТ СТОИМОСТИ ОКОН ПВХ
             </h1>
-            
+           
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
                 <!-- City Selection -->
                 <div>
-                    <label class="block text-sm font-semibold text-gray-700 mb-2">
-                        Город
-                    </label>
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">Город</label>
                     <select id="city" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-base">
                         <option value="">Выберите город</option>
                         <option value="СПБ">СПБ</option>
@@ -172,12 +121,9 @@
                     </select>
                 </div>
 
-
                 <!-- Film Type -->
                 <div>
-                    <label class="block text-sm font-semibold text-gray-700 mb-2">
-                        Пленка
-                    </label>
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">Пленка</label>
                     <select id="filmType" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-base">
                         <option value="">Выберите пленку</option>
                         <option value="Прозрачная">Прозрачная</option>
@@ -185,67 +131,44 @@
                     </select>
                 </div>
 
-
                 <!-- Window Count -->
                 <div>
-                    <label class="block text-sm font-semibold text-gray-700 mb-2">
-                        Количество окон
-                    </label>
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">Количество окон</label>
                     <select id="windowCount" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-base">
-                        <option value="1">1</option>
-                        <option value="2">2</option>
-                        <option value="3">3</option>
-                        <option value="4">4</option>
-                        <option value="5">5</option>
-                        <option value="6">6</option>
-                        <option value="7">7</option>
-                        <option value="8">8</option>
-                        <option value="9">9</option>
+                        <option value="1">1</option><option value="2">2</option><option value="3">3</option>
+                        <option value="4">4</option><option value="5">5</option><option value="6">6</option>
+                        <option value="7">7</option><option value="8">8</option><option value="9">9</option>
                         <option value="10">10</option>
                     </select>
                 </div>
 
-
                 <!-- Coefficient -->
                 <div>
-                    <label class="block text-sm font-semibold text-gray-700 mb-2">
-                        Коэффициент расчета
-                    </label>
-                    <input type="number" id="coefficient" step="0.1" value="1.1" 
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">Коэффициент расчета</label>
+                    <input type="number" id="coefficient" step="0.1" value="1.1"
                            class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-base"
                            min="1" max="2">
                 </div>
 
-
-                <!-- Fastening -->
-                <div class="md:col-span-2">
-                    <label class="block text-sm font-semibold text-gray-700 mb-2">
-                        Крепеж
-                    </label>
-                    <select id="fastening" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-base">
-                        <option value="">Выберите крепеж</option>
-                        <option value="люверсы">люверсы</option>
-                        <option value="пластиковые ремешки">пластиковые ремешки</option>
-                        <option value="полиамидные скобы">полиамидные скобы</option>
-                        <option value="металлические скобы">металлические скобы</option>
-                        <option value="французские замки">французские замки</option>
-                    </select>
-                </div>
-
-
                 <!-- Zipper Input -->
                 <div class="md:col-span-2">
-                    <label class="block text-sm font-semibold text-gray-700 mb-2">
-                        Молния (пог. м)
-                    </label>
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">Молния (пог. м)</label>
                     <input type="number" id="zipperLength" step="0.01" value="0.00"
                            class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-base"
                            min="0" placeholder="0.00">
                 </div>
+
+                <!-- Advance Payment Selection -->
+                <div class="md:col-span-2">
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">Аванс внесен</label>
+                    <select id="advancePaid" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-base">
+                        <option value="нет">Нет</option>
+                        <option value="да">Да</option>
+                    </select>
+                </div>
             </div>
 
-
-            <!-- Dimensions Input -->
+            <!-- Dimensions Input with per-window fastening -->
             <div id="dimensionsContainer" class="mb-8">
                 <h3 class="text-lg font-semibold text-gray-800 mb-4">Размеры окон (м)</h3>
                 <div id="dimensionsInputs" class="space-y-4">
@@ -253,8 +176,7 @@
                 </div>
             </div>
 
-
-            <!-- Download PDF Button (visible when results shown) -->
+            <!-- Download PDF Button -->
             <div id="pdfDownloadBtnWrapper" class="flex justify-center mt-6 mb-4 no-print hidden">
                 <button id="downloadPdfBtn" class="bg-gradient-to-r from-green-600 to-emerald-700 text-white font-bold py-3 px-8 rounded-xl shadow-lg download-btn flex items-center gap-2 text-lg">
                     📄 Скачать коммерческое предложение (PDF)
@@ -262,20 +184,16 @@
             </div>
         </div>
 
-
-        <!-- Results Section — this block will be captured for PDF exactly as shown -->
+        <!-- Results Section -->
         <div id="resultsContainer" class="hidden mt-8">
-            <!-- PDF Export Area: everything inside here will be saved as PDF with exact visual style -->
             <div id="pdfExportArea" class="pdf-print-area">
                 <div class="bg-dark-bg rounded-xl shadow-2xl p-6 border border-gold">
-                    <!-- Логотип компании (текстовый логотип как на фото, так как изображение может отсутствовать, но стиль как в оригинале) -->
                     <div class="flex justify-center mb-6">
                         <div class="text-center">
-                            <div class="text-2xl font-bold tracking-wide text-gold-highlight">ТРИКОЛОРИЯ КОМФОРТА</div>
-                            <div class="text-2xl font-bold text-center text-dark-text">МЯГКИЕ ОКНА ПВХ</div>
+                            <img src="images/logoterrcomfort.png" alt="Триколория Комфорта" style="max-height: 60px; width: auto;"> 
+                            
                         </div>
                     </div>
-
 
                     <div class="border-b-2 border-gold pb-4 mb-6">
                         <h2 class="text-2xl font-bold text-center text-dark-text">
@@ -283,111 +201,70 @@
                         </h2>
                     </div>
 
+                    <div id="resultsGrid" class="grid grid-cols-1 md:grid-cols-2 gap-2 mb-6"></div>
 
-                    <div id="resultsGrid" class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-                        <!-- dynamic result cards -->
-                    </div>
-
-
-                    <!-- Additional Information Block (exactly as screenshot style) -->
                     <div id="additionalInfo" class="bg-dark-card rounded-lg p-5 border-l-4 border-gold mb-6">
-                        <ul id="infoList" class="text-dark-text leading-relaxed text-base space-y-2 list-none">
-                            <!-- dynamic bullet items -->
-                        </ul>
+                        <ul id="infoList" class="text-dark-text leading-relaxed text-base space-y-2 list-none"></ul>
                     </div>
 
-
-                    <!-- Contact Information -->
                     <div class="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg p-5 text-center">
                         <p class="text-gray-800 font-medium text-base">
-                            Ваш личный менеджер по продажам компании Триколория Комфорта: 
-                            <span class="font-bold">тел/max +7 995 282 4484</span> 
-                            <a href="http://www.tercomfort.ru" target="_blank" class="text-blue-600 hover:underline ml-2">www.tercomfort.ru</a>
+                            Ваш личный менеджер по продажам компании Триколория Комфорта:
+                            <span class="font-bold">тел/max +7 995 282 4484</span>
+                            <a href="http://www.terrcomfort.ru" target="_blank" class="text-blue-600 hover:underline ml-2">www.tercomfort.ru</a>
                         </p>
+                    </div>
+
+                    <!-- QR Code Section - shown only if advance paid = yes -->
+                    <div id="qrSection" class="qr-container hidden mt-6 pt-4 border-t border-gold">
+                        <p class="text-center text-dark-text text-sm mb-3 font-medium">
+                            ✓ Аванс внесен — отсканируйте QR-код для оплаты
+                        </p>
+                        <div class="flex justify-center">
+                            <img src="qr.jpg" alt="QR-код для оплаты" 
+                                 class="w-40 h-40 md:w-48 md:h-48 object-contain border-4 border-gold rounded-lg bg-white p-2 shadow-lg">
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-
 
         <div id="noResultsMessage" class="text-center py-8 text-gray-500 bg-white rounded-xl shadow mt-6 no-print">
             <p>Заполните все поля для расчета стоимости</p>
         </div>
     </div>
 
-
     <script>
-        // Price data (from original)
+        // Price data
         const priceData = {
             'Пенза': {
-                'Прозрачная': {
-                    'люверсы': 1600,
-                    'пластиковые ремешки': 1750,
-                    'полиамидные скобы': 1850,
-                    'металлические скобы': 1950,
-                    'французские замки': 2050
-                },
-                'Тонированная': {
-                    'люверсы': 1920,
-                    'пластиковые ремешки': 2100,
-                    'полиамидные скобы': 2220,
-                    'металлические скобы': 2340,
-                    'французские замки': 2460
-                }
+                'Прозрачная': { 'люверсы': 1600, 'пластиковые ремешки': 1750, 'полиамидные скобы': 1850, 'металлические скобы': 1950, 'французские замки': 2050 },
+                'Тонированная': { 'люверсы': 1920, 'пластиковые ремешки': 2100, 'полиамидные скобы': 2220, 'металлические скобы': 2340, 'французские замки': 2460 }
             },
             'МСК': {
-                'Прозрачная': {
-                    'люверсы': 1600,
-                    'пластиковые ремешки': 1750,
-                    'полиамидные скобы': 1950,
-                    'металлические скобы': 2050,
-                    'французские замки': 2150
-                },
-                'Тонированная': {
-                    'люверсы': 1920,
-                    'пластиковые ремешки': 2100,
-                    'полиамидные скобы': 2340,
-                    'металлические скобы': 2460,
-                    'французские замки': 2580
-                }
+                'Прозрачная': { 'люверсы': 1600, 'пластиковые ремешки': 1750, 'полиамидные скобы': 1950, 'металлические скобы': 2050, 'французские замки': 2150 },
+                'Тонированная': { 'люверсы': 1920, 'пластиковые ремешки': 2100, 'полиамидные скобы': 2340, 'металлические скобы': 2460, 'французские замки': 2580 }
             },
             'СПБ': {
-                'Прозрачная': {
-                    'люверсы': 1600,
-                    'пластиковые ремешки': 1750,
-                    'полиамидные скобы': 1950,
-                    'металлические скобы': 2050,
-                    'французские замки': 2150
-                },
-                'Тонированная': {
-                    'люверсы': 1920,
-                    'пластиковые ремешки': 2100,
-                    'полиамидные скобы': 2340,
-                    'металлические скобы': 2460,
-                    'французские замки': 2580
-                }
+                'Прозрачная': { 'люверсы': 1600, 'пластиковые ремешки': 1750, 'полиамидные скобы': 1950, 'металлические скобы': 2050, 'французские замки': 2150 },
+                'Тонированная': { 'люверсы': 1920, 'пластиковые ремешки': 2100, 'полиамидные скобы': 2340, 'металлические скобы': 2460, 'французские замки': 2580 }
             }
         };
-
 
         const strapPrice = { 'Пенза': 100, 'МСК': 100, 'СПБ': 100 };
         const mountingWoodPrice = { 'Пенза': 600, 'МСК': 700, 'СПБ': 700 };
         const mountingMetalPrice = { 'Пенза': 800, 'МСК': 900, 'СПБ': 900 };
         const zipperPrice = { 'Пенза': 850, 'МСК': 850, 'СПБ': 850 };
 
-
-        function roundToNearest100(value) {
-            return Math.floor(value / 100) * 100;
-        }
-
+        function roundToNearest100(value) { return Math.floor(value / 100) * 100; }
 
         // DOM elements
         const citySelect = document.getElementById('city');
         const filmTypeSelect = document.getElementById('filmType');
         const windowCountSelect = document.getElementById('windowCount');
         const coefficientInput = document.getElementById('coefficient');
-        const fasteningSelect = document.getElementById('fastening');
         const zipperLengthInput = document.getElementById('zipperLength');
+        const advancePaidSelect = document.getElementById('advancePaid');
         const dimensionsInputs = document.getElementById('dimensionsInputs');
         const resultsContainer = document.getElementById('resultsContainer');
         const resultsGrid = document.getElementById('resultsGrid');
@@ -395,70 +272,105 @@
         const infoList = document.getElementById('infoList');
         const pdfDownloadBtnWrapper = document.getElementById('pdfDownloadBtnWrapper');
         const downloadPdfBtn = document.getElementById('downloadPdfBtn');
+        const qrSection = document.getElementById('qrSection');
 
+        // Toggle QR code visibility
+        function toggleQRCode() {
+            if (advancePaidSelect.value === 'да') {
+                qrSection.classList.remove('hidden');
+            } else {
+                qrSection.classList.add('hidden');
+            }
+        }
 
-        // Initialize dimensions
+        // Initialize dimensions with fastening dropdown for each window
         function initializeDimensions() {
             const count = parseInt(windowCountSelect.value);
             dimensionsInputs.innerHTML = '';
             for (let i = 0; i < count; i++) {
                 const div = document.createElement('div');
-                div.className = 'grid grid-cols-1 md:grid-cols-2 gap-4';
+                div.className = 'grid grid-cols-1 md:grid-cols-3 gap-2 p-4 bg-gray-50 rounded-lg border border-gray-200';
                 div.innerHTML = `
                     <div>
-                        <label class="block text-sm font-medium text-gray-600 mb-1">Ширина ${i + 1}</label>
+                        <label class="block text-sm font-medium text-gray-600 mb-1">Ширина ${i + 1} (м)</label>
                         <input type="number" step="0.01" data-index="${i}" data-field="width" class="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 dimension-input" placeholder="0.00" min="0">
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-gray-600 mb-1">Высота ${i + 1}</label>
+                        <label class="block text-sm font-medium text-gray-600 mb-1">Высота ${i + 1} (м)</label>
                         <input type="number" step="0.01" data-index="${i}" data-field="height" class="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 dimension-input" placeholder="0.00" min="0">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-600 mb-1">Крепеж ${i + 1}</label>
+                        <select data-index="${i}" data-field="fastening" class="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 dimension-fastening">
+                            <option value="">Выберите</option>
+                            <option value="люверсы">люверсы</option>
+                            <option value="пластиковые ремешки">пластиковые ремешки</option>
+                            <option value="полиамидные скобы">полиамидные скобы</option>
+                            <option value="металлические скобы">металлические скобы</option>
+                            <option value="французские замки">французские замки</option>
+                        </select>
                     </div>
                 `;
                 dimensionsInputs.appendChild(div);
             }
-            document.querySelectorAll('.dimension-input').forEach(input => {
+            document.querySelectorAll('.dimension-input, .dimension-fastening').forEach(input => {
                 input.addEventListener('input', calculateResults);
             });
         }
 
-
-        function getDimensions() {
-            const dimensions = [];
-            const inputs = document.querySelectorAll('.dimension-input');
-            for (let i = 0; i < inputs.length; i += 2) {
-                const widthInput = inputs[i];
-                const heightInput = inputs[i+1];
-                dimensions.push({
+        function getWindowData() {
+            const windows = [];
+            const count = parseInt(windowCountSelect.value);
+            for (let i = 0; i < count; i++) {
+                const widthInput = document.querySelector(`.dimension-input[data-index="${i}"][data-field="width"]`);
+                const heightInput = document.querySelector(`.dimension-input[data-index="${i}"][data-field="height"]`);
+                const fasteningSelect = document.querySelector(`.dimension-fastening[data-index="${i}"]`);
+                windows.push({
                     width: parseFloat(widthInput?.value) || 0,
-                    height: parseFloat(heightInput?.value) || 0
+                    height: parseFloat(heightInput?.value) || 0,
+                    fastening: fasteningSelect?.value || ''
                 });
             }
-            return dimensions;
+            return windows;
         }
-
 
         function calculateResults() {
             const city = citySelect.value;
             const filmType = filmTypeSelect.value;
-            const fastening = fasteningSelect.value;
             const zipperLength = parseFloat(zipperLengthInput.value) || 0;
             const coefficient = parseFloat(coefficientInput.value) || 1.1;
-            
-            if (!city || !filmType || !fastening) {
+           
+            if (!city || !filmType) {
                 resultsContainer.classList.add('hidden');
                 noResultsMessage.classList.remove('hidden');
                 pdfDownloadBtnWrapper.classList.add('hidden');
                 return;
             }
 
+            const windows = getWindowData();
+            
+            let allValid = true;
+            for (const win of windows) {
+                if (win.width <= 0 || win.height <= 0 || !win.fastening) {
+                    allValid = false;
+                    break;
+                }
+            }
+            
+            if (!allValid) {
+                resultsContainer.classList.add('hidden');
+                noResultsMessage.classList.remove('hidden');
+                pdfDownloadBtnWrapper.classList.add('hidden');
+                return;
+            }
 
-            const dimensions = getDimensions();
             let totalArea = 0;
             let totalWidth = 0;
-            dimensions.forEach(dim => {
-                totalArea += dim.width * dim.height;
-                totalWidth += dim.width;
+            windows.forEach(win => {
+                totalArea += win.width * win.height;
+                totalWidth += win.width;
             });
+            
             if (totalArea === 0) {
                 resultsContainer.classList.add('hidden');
                 noResultsMessage.classList.remove('hidden');
@@ -466,30 +378,35 @@
                 return;
             }
 
-
             const totalAreaRounded = Math.round(totalArea * 100) / 100;
             const finishedArea = totalAreaRounded * coefficient;
             const finishedAreaRounded = Math.round(finishedArea * 100) / 100;
 
-
-            const pvcPricePerM2 = priceData[city][filmType][fastening] || 0;
-            const pvcTotalPrice = Math.round(finishedAreaRounded * pvcPricePerM2);
-            
+            // 🔄 Расчет стоимости для каждого окна отдельно
+            let pvcTotalPrice = 0;
+            windows.forEach(win => {
+                const pricePerM2 = priceData[city][filmType][win.fastening] || 0;
+                const windowArea = win.width * win.height;
+                pvcTotalPrice += windowArea * pricePerM2;
+            });
+            pvcTotalPrice = Math.round(pvcTotalPrice);
+           
             let strapCost = 0;
-            if (fastening !== 'люверсы') {
+            const hasNonEyelet = windows.some(w => w.fastening !== 'люверсы');
+            if (hasNonEyelet) {
                 const rawStrapCost = (totalWidth / 0.6) * strapPrice[city];
                 strapCost = roundToNearest100(rawStrapCost);
             }
-            
+           
             const zipperCost = Math.round(zipperLength * zipperPrice[city]);
             const preliminaryCost = pvcTotalPrice + strapCost + zipperCost;
-            
+           
             let woodMountingCost = Math.round(finishedAreaRounded * mountingWoodPrice[city]);
             let metalMountingCost = Math.round(finishedAreaRounded * mountingMetalPrice[city]);
             const minMountingCost = city === 'Пенза' ? 5000 : 10000;
             if (woodMountingCost < minMountingCost) woodMountingCost = minMountingCost;
             if (metalMountingCost < minMountingCost) metalMountingCost = minMountingCost;
-            
+           
             // Populate results grid
             resultsGrid.innerHTML = `
                 <div class="bg-dark-card p-4 rounded-lg shadow-sm border border-gold result-item">
@@ -520,13 +437,13 @@
                     <p class="text-sm text-dark-text mb-1">Монтаж на дерево (не менее ${minMountingCost.toLocaleString()} руб)</p>
                     <p class="text-xl font-bold text-gold-highlight">${woodMountingCost.toLocaleString()} руб</p>
                 </div>
-                <div class="bg-dark-card p-4 rounded-lg shadow-sm border border-gold result-item md:col-span-2">
+                <div class="bg-dark-card p-4 rounded-lg shadow-sm border border-gold result-item">
                     <p class="text-sm text-dark-text mb-1">Монтаж на металл (не менее ${minMountingCost.toLocaleString()} руб)</p>
                     <p class="text-xl font-bold text-gold-highlight">${metalMountingCost.toLocaleString()} руб</p>
                 </div>
             `;
-            
-            // Build additional info block (exactly like screenshot bullet list)
+           
+            // Build additional info block
             infoList.innerHTML = '';
             function addInfoItem(text) {
                 const li = document.createElement('li');
@@ -534,10 +451,13 @@
                 li.innerHTML = `<span class="custom-bullet"></span><span>${text}</span>`;
                 infoList.appendChild(li);
             }
-            
+           
+            const uniqueFastenings = [...new Set(windows.map(w => w.fastening).filter(f => f))];
+            const fasteningDisplay = uniqueFastenings.join(', ');
+           
             if (city === "СПБ") {
                 addInfoItem(`Пленка ПВХ 700 микрон с УФ покрытием, морозостойкая, самозатухающая ${filmType.toLowerCase()}`);
-                addInfoItem(`Крепеж: ${fastening}`);
+                addInfoItem(`Крепеж: ${fasteningDisplay}`);
                 addInfoItem(`Тракторная молния: ${zipperPrice[city]} руб/пог.м`);
                 addInfoItem(`Стоимость москитной сетки: 1700 руб/м²`);
                 addInfoItem(`Стоимость двери из полиуретана: 3300 руб/м²`);
@@ -545,7 +465,7 @@
                 addInfoItem(`Монтаж на металлическую поверхность: ${mountingMetalPrice[city]} руб/м²`);
             } else if (city === "МСК") {
                 addInfoItem(`Пленка ПВХ 700 микрон с УФ покрытием, морозостойкая, самозатухающая ${filmType.toLowerCase()}`);
-                addInfoItem(`Крепеж: ${fastening}`);
+                addInfoItem(`Крепеж: ${fasteningDisplay}`);
                 addInfoItem(`Тракторная молния: ${zipperPrice[city]} руб/пог.м`);
                 addInfoItem(`Стоимость москитной сетки: 1500 руб/м²`);
                 addInfoItem(`Стоимость двери из полиуретана: 3300 руб/м²`);
@@ -555,7 +475,7 @@
                 addInfoItem(`Доставка СДЭК/Яндекс: 1000 руб`);
             } else if (city === "Пенза") {
                 addInfoItem(`Пленка ПВХ 700 микрон с УФ покрытием, морозостойкая, самозатухающая ${filmType.toLowerCase()}`);
-                addInfoItem(`Крепеж: ${fastening}`);
+                addInfoItem(`Крепеж: ${fasteningDisplay}`);
                 addInfoItem(`Тракторная молния: ${zipperPrice[city]} руб/пог.м`);
                 addInfoItem(`Стоимость москитной сетки: 1500 руб/м²`);
                 addInfoItem(`Стоимость двери из полиуретана: 3300 руб/м²`);
@@ -563,32 +483,32 @@
                 addInfoItem(`Монтаж на деревянную поверхность: ${mountingWoodPrice[city]} руб/м²`);
                 addInfoItem(`Монтаж на металлическую поверхность: ${mountingMetalPrice[city]} руб/м²`);
             }
-            
+           
+            // Update QR code visibility
+            toggleQRCode();
+           
             resultsContainer.classList.remove('hidden');
             noResultsMessage.classList.add('hidden');
             pdfDownloadBtnWrapper.classList.remove('hidden');
         }
-        
-        // PDF Generation Function — captures #pdfExportArea exactly as visible
+       
         function generatePDF() {
             const element = document.getElementById('pdfExportArea');
             if (!element) return;
-            
-            // Show loading indication (optional)
+           
             const btn = downloadPdfBtn;
             const originalText = btn.innerHTML;
             btn.innerHTML = '⏳ Генерация PDF...';
             btn.disabled = true;
 
-            // html2canwas width регулируешь масштаб)
             const opt = {
-                margin:        [5, 5, 0, 0], // top, right, bottom, left in inches (скорректировано)
-                filename:      `Коммерческое_предложение_Триколория_Комфорта.pdf`,
-                image:         { type: 'jpeg', quality: 0.98 },
-                html2canvas:   { scale: 2, width: 881, letterRendering: true, useCORS: true, logging: false, scrollY: 0 },
+                margin: [5, 5, 0, 0],
+                filename: `Коммерческое_предложение_Триколория_Комфорта.pdf`,
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2, width: 881, letterRendering: true, useCORS: true, logging: false, scrollY: 0 },
                 jsPDF: { unit: 'mm', format: [180, 260], orientation: 'portrait' }
             };
-            
+           
             html2pdf().set(opt).from(element).save().then(() => {
                 btn.innerHTML = originalText;
                 btn.disabled = false;
@@ -599,25 +519,26 @@
                 alert("Ошибка при создании PDF. Попробуйте снова.");
             });
         }
-        
+       
         // Event listeners
         citySelect.addEventListener('change', calculateResults);
         filmTypeSelect.addEventListener('change', calculateResults);
-        windowCountSelect.addEventListener('change', () => {
-            initializeDimensions();
-            calculateResults();
-        });
+        windowCountSelect.addEventListener('change', () => { initializeDimensions(); calculateResults(); });
         coefficientInput.addEventListener('input', calculateResults);
-        fasteningSelect.addEventListener('change', calculateResults);
         zipperLengthInput.addEventListener('input', calculateResults);
+        advancePaidSelect.addEventListener('change', () => {
+            toggleQRCode();
+            // Recalculate to update QR visibility in results if already shown
+            if (!resultsContainer.classList.contains('hidden')) {
+                calculateResults();
+            }
+        });
         downloadPdfBtn.addEventListener('click', generatePDF);
-        
-        // Initial load
+       
         initializeDimensions();
-        
-        // additional trigger for dimension inputs
+       
         document.addEventListener('input', function(e) {
-            if(e.target.classList && e.target.classList.contains('dimension-input')) {
+            if(e.target.classList && (e.target.classList.contains('dimension-input') || e.target.classList.contains('dimension-fastening'))) {
                 calculateResults();
             }
         });
