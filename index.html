@@ -134,15 +134,6 @@
                            min="1" max="2">
                 </div>
 
-                <!-- Mount Type Selection -->
-                <div>
-                    <label class="block text-sm font-semibold text-gray-700 mb-2">Монтаж</label>
-                    <select id="mountType" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-base">
-                    <option value="оба">Оба</option>
-                    <option value="деревянная поверхность">Деревянная поверхность</option>
-                    <option value="металлическая поверхность">Металлическая поверхность</option>
-                    </select>
-                </div>
                 <!-- Zipper Input -->
                 <div class="md:col-span-2">
                     <label class="block text-sm font-semibold text-gray-700 mb-2">Молния (пог. м)</label>
@@ -290,7 +281,6 @@
         const qrSection = document.getElementById('qrSection');
         const windowDetailsList = document.getElementById('windowDetailsList');
         const zipperDisplay = document.getElementById('zipperDisplay');
-        const mountTypeSelect = document.getElementById('mountType');
 
         // Toggle QR code visibility
         function toggleQRCode() {
@@ -459,38 +449,7 @@
             const minMountingCost = city === 'Пенза' ? 5000 : 10000;
             if (woodMountingCost < minMountingCost) woodMountingCost = minMountingCost;
             if (metalMountingCost < minMountingCost) metalMountingCost = minMountingCost;
-
-            // Определяем, какие блоки монтажа показать
-            const mountType = mountTypeSelect.value;
-            let mountingHTML = '';
-
-            if (mountType === 'оба') {
-                mountingHTML += `
-                    <div class="bg-dark-card p-4 rounded-lg shadow-sm border border-gold result-item">
-                        <p class="text-sm text-dark-text mb-1">Монтаж на дерево (не менее ${minMountingCost.toLocaleString()} руб)</p>
-                        <p class="text-xl font-bold text-gold-highlight">${woodMountingCost.toLocaleString()} руб</p>
-                    </div>
-                    <div class="bg-dark-card p-4 rounded-lg shadow-sm border border-gold result-item md:col-span-2">
-                        <p class="text-sm text-dark-text mb-1">Монтаж на металл (не менее ${minMountingCost.toLocaleString()} руб)</p>
-                        <p class="text-xl font-bold text-gold-highlight">${metalMountingCost.toLocaleString()} руб</p>
-                    </div>
-                `;
-            } else if (mountType === 'деревянная поверхность') {
-                mountingHTML += `
-                    <div class="bg-dark-card p-4 rounded-lg shadow-sm border border-gold result-item md:col-span-2">
-                        <p class="text-sm text-dark-text mb-1">Монтаж на дерево (не менее ${minMountingCost.toLocaleString()} руб)</p>
-                        <p class="text-xl font-bold text-gold-highlight">${woodMountingCost.toLocaleString()} руб</p>
-                    </div>
-            `;
-            } else if (mountType === 'металлическая поверхность') {
-    mountingHTML += `
-        <div class="bg-dark-card p-4 rounded-lg shadow-sm border border-gold result-item md:col-span-2">
-            <p class="text-sm text-dark-text mb-1">Монтаж на металл (не менее ${minMountingCost.toLocaleString()} руб)</p>
-            <p class="text-xl font-bold text-gold-highlight">${metalMountingCost.toLocaleString()} руб</p>
-        </div>
-    `;
-}
-
+           
             // Populate results grid
             resultsGrid.innerHTML = `
                 <div class="bg-dark-card p-4 rounded-lg shadow-sm border border-gold result-item">
@@ -518,12 +477,12 @@
                     <p class="text-xl font-bold text-gold-highlight">${preliminaryCost.toLocaleString()} руб</p>
                 </div>
                 <div class="bg-dark-card p-4 rounded-lg shadow-sm border border-gold result-item">
-                    <p class="text-sm text-dark-text mb-1">Стоимость молнии</p>
-                    <p class="text-xl font-bold text-gold-highlight">${zipperCost.toLocaleString()} руб</p>
+                    <p class="text-sm text-dark-text mb-1">Монтаж на дерево (не менее ${minMountingCost.toLocaleString()} руб)</p>
+                    <p class="text-xl font-bold text-gold-highlight">${woodMountingCost.toLocaleString()} руб</p>
                 </div>
                 <div class="bg-dark-card p-4 rounded-lg shadow-sm border border-gold result-item">
-                    <p class="text-sm text-dark-text mb-1">Предварительная стоимость без учета монтажа</p>
-                    <p class="text-xl font-bold text-gold-highlight">${preliminaryCost.toLocaleString()} руб</p>
+                    <p class="text-sm text-dark-text mb-1">Монтаж на металл (не менее ${minMountingCost.toLocaleString()} руб)</p>
+                    <p class="text-xl font-bold text-gold-highlight">${metalMountingCost.toLocaleString()} руб</p>
                 </div>
             `;
            
@@ -650,7 +609,6 @@
                 calculateResults();
             }
         });
-        mountTypeSelect.addEventListener('change', calculateResults);
     </script>
 </body>
 </html>
