@@ -37,18 +37,6 @@
             justify-content: center;
             margin-bottom: 16px;
         }
-        .logo-placeholder {
-            width: 60px;
-            height: 60px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: bold;
-            font-size: 20px;
-        }
         @media print {
             body { background: white !important; padding: 0 !important; margin: 0 !important; }
             .no-print { display: none !important; }
@@ -78,6 +66,7 @@
             .text-gold-highlight { color: #F5C54B !important; }
             .result-item { break-inside: avoid; page-break-inside: avoid; }
             .border-b-2 { padding-bottom: 0.3rem !important; margin-bottom: 0.5rem !important; }
+            .window-detail-item { break-inside: avoid; }
         }
         .result-item { transition: all 0.2s ease; }
         .result-item:hover { transform: translateY(-2px); box-shadow: 0 4px 8px rgba(0,0,0,0.3); }
@@ -98,6 +87,11 @@
             padding: 0 !important;
             margin: 0 !important;
             border: none !important;
+        }
+        .window-detail-card {
+            background: rgba(58, 58, 58, 0.4);
+            border: 1px solid #555;
+            border-left: 3px solid #F5C54B;
         }
     </style>
 </head>
@@ -121,16 +115,6 @@
                     </select>
                 </div>
 
-                <!-- Film Type -->
-                <div>
-                    <label class="block text-sm font-semibold text-gray-700 mb-2">Пленка</label>
-                    <select id="filmType" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-base">
-                        <option value="">Выберите пленку</option>
-                        <option value="Прозрачная">Прозрачная</option>
-                        <option value="Тонированная">Тонированная</option>
-                    </select>
-                </div>
-
                 <!-- Window Count -->
                 <div>
                     <label class="block text-sm font-semibold text-gray-700 mb-2">Количество окон</label>
@@ -150,6 +134,15 @@
                            min="1" max="2">
                 </div>
 
+                <!-- Mount Type Selection -->
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">Монтаж</label>
+                    <select id="mountType" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-base">
+                    <option value="оба">Оба</option>
+                    <option value="деревянная поверхность">Деревянная поверхность</option>
+                    <option value="металлическая поверхность">Металлическая поверхность</option>
+                    </select>
+                </div>
                 <!-- Zipper Input -->
                 <div class="md:col-span-2">
                     <label class="block text-sm font-semibold text-gray-700 mb-2">Молния (пог. м)</label>
@@ -168,7 +161,7 @@
                 </div>
             </div>
 
-            <!-- Dimensions Input with per-window fastening -->
+            <!-- Dimensions Input with per-window film and fastening -->
             <div id="dimensionsContainer" class="mb-8">
                 <h3 class="text-lg font-semibold text-gray-800 mb-4">Размеры окон (м)</h3>
                 <div id="dimensionsInputs" class="space-y-4">
@@ -191,7 +184,6 @@
                     <div class="flex justify-center mb-6">
                         <div class="text-center">
                             <img src="images/logoterrcomfort.png" alt="Триколория Комфорта" style="max-height: 60px; width: auto;"> 
-                            
                         </div>
                     </div>
 
@@ -202,6 +194,20 @@
                     </div>
 
                     <div id="resultsGrid" class="grid grid-cols-1 md:grid-cols-2 gap-2 mb-6"></div>
+
+                    <!-- Window Details Section -->
+                    <div id="windowDetailsSection" class="mb-6">
+                        <h3 class="text-lg font-semibold text-gold-highlight mb-3 border-b border-gold pb-2">Детализация по окнам</h3>
+                        <div id="windowDetailsList" class="space-y-3"></div>
+                    </div>
+
+                    <!-- Zipper Info -->
+                    <div id="zipperInfo" class="bg-dark-card rounded-lg p-4 mb-6 border-l-4 border-gold">
+                        <p class="text-dark-text">
+                            <span class="font-medium">Молния:</span> 
+                            <span id="zipperDisplay" class="text-gold-highlight font-bold"></span>
+                        </p>
+                    </div>
 
                     <div id="additionalInfo" class="bg-dark-card rounded-lg p-5 border-l-4 border-gold mb-6">
                         <ul id="infoList" class="text-dark-text leading-relaxed text-base space-y-2 list-none"></ul>
@@ -235,19 +241,28 @@
     </div>
 
     <script>
-        // Price data
+        // Price data with new film types
         const priceData = {
             'Пенза': {
-                'Прозрачная': { 'люверсы': 1600, 'пластиковые ремешки': 1750, 'полиамидные скобы': 1950, 'металлические скобы': 2050, 'французские замки': 2150 },
-                'Тонированная': { 'люверсы': 1920, 'пластиковые ремешки': 2100, 'полиамидные скобы': 2340, 'металлические скобы': 2460, 'французские замки': 2580 }
+                'Прозрачная': { 'люверсы': 1600, 'пластиковые ремешки': 1750, 'полиамидные скобы': 1950, 'металлические скобы': 2050, 'французские замки': 2150, 'раздвижные шторы': 2150 },
+                'Тонированная': { 'люверсы': 1920, 'пластиковые ремешки': 2100, 'полиамидные скобы': 2340, 'металлические скобы': 2460, 'французские замки': 2580, 'раздвижные шторы': 2580 },
+                'Москитная сетка': { 'люверсы': 1500, 'пластиковые ремешки': 1500, 'полиамидные скобы': 1500, 'металлические скобы': 1500, 'французские замки': 1500, 'раздвижные шторы': 1500 },
+                'Полиуретан': { 'люверсы': 3300, 'пластиковые ремешки': 3300, 'полиамидные скобы': 3300, 'металлические скобы': 3300, 'французские замки': 3300, 'раздвижные шторы': 3300 },
+                'Тент': { 'люверсы': 1300, 'пластиковые ремешки': 1500, 'полиамидные скобы': 1500, 'металлические скобы': 1500, 'французские замки': 1500, 'раздвижные шторы': 1500 }
             },
             'Другие': {
-                'Прозрачная': { 'люверсы': 1600, 'пластиковые ремешки': 1750, 'полиамидные скобы': 1950, 'металлические скобы': 2050, 'французские замки': 2150 },
-                'Тонированная': { 'люверсы': 1920, 'пластиковые ремешки': 2100, 'полиамидные скобы': 2340, 'металлические скобы': 2460, 'французские замки': 2580 }
+                'Прозрачная': { 'люверсы': 1600, 'пластиковые ремешки': 1750, 'полиамидные скобы': 1950, 'металлические скобы': 2050, 'французские замки': 2150, 'раздвижные шторы': 2150 },
+                'Тонированная': { 'люверсы': 1920, 'пластиковые ремешки': 2100, 'полиамидные скобы': 2340, 'металлические скобы': 2460, 'французские замки': 2580, 'раздвижные шторы': 2580 },
+                'Москитная сетка': { 'люверсы': 1500, 'пластиковые ремешки': 1500, 'полиамидные скобы': 1500, 'металлические скобы': 1500, 'французские замки': 1500, 'раздвижные шторы': 1500 },
+                'Полиуретан': { 'люверсы': 3300, 'пластиковые ремешки': 3300, 'полиамидные скобы': 3300, 'металлические скобы': 3300, 'французские замки': 3300, 'раздвижные шторы': 3300 },
+                'Тент': { 'люверсы': 1300, 'пластиковые ремешки': 1500, 'полиамидные скобы': 1500, 'металлические скобы': 1500, 'французские замки': 1500, 'раздвижные шторы': 1500 }
             },
             'СПБ': {
-                'Прозрачная': { 'люверсы': 1600, 'пластиковые ремешки': 1750, 'полиамидные скобы': 1950, 'металлические скобы': 2050, 'французские замки': 2150 },
-                'Тонированная': { 'люверсы': 1920, 'пластиковые ремешки': 2100, 'полиамидные скобы': 2340, 'металлические скобы': 2460, 'французские замки': 2580 }
+                'Прозрачная': { 'люверсы': 1600, 'пластиковые ремешки': 1750, 'полиамидные скобы': 1950, 'металлические скобы': 2050, 'французские замки': 2150, 'раздвижные шторы': 2150 },
+                'Тонированная': { 'люверсы': 1920, 'пластиковые ремешки': 2100, 'полиамидные скобы': 2340, 'металлические скобы': 2460, 'французские замки': 2580, 'раздвижные шторы': 2580 },
+                'Москитная сетка': { 'люверсы': 1500, 'пластиковые ремешки': 1500, 'полиамидные скобы': 1500, 'металлические скобы': 1500, 'французские замки': 1500, 'раздвижные шторы': 1500 },
+                'Полиуретан': { 'люверсы': 3300, 'пластиковые ремешки': 3300, 'полиамидные скобы': 3300, 'металлические скобы': 3300, 'французские замки': 3300, 'раздвижные шторы': 3300 },
+                'Тент': { 'люверсы': 1300, 'пластиковые ремешки': 1500, 'полиамидные скобы': 1500, 'металлические скобы': 1500, 'французские замки': 1500, 'раздвижные шторы': 1500 }
             }
         };
 
@@ -255,12 +270,12 @@
         const mountingWoodPrice = { 'Пенза': 600, 'Другие': 700, 'СПБ': 700 };
         const mountingMetalPrice = { 'Пенза': 800, 'Другие': 900, 'СПБ': 900 };
         const zipperPrice = { 'Пенза': 850, 'Другие': 850, 'СПБ': 850 };
+        const curtainPricePerWidth = 3500; // for раздвижные шторы
 
         function roundToNearest100(value) { return Math.floor(value / 100) * 100; }
 
         // DOM elements
         const citySelect = document.getElementById('city');
-        const filmTypeSelect = document.getElementById('filmType');
         const windowCountSelect = document.getElementById('windowCount');
         const coefficientInput = document.getElementById('coefficient');
         const zipperLengthInput = document.getElementById('zipperLength');
@@ -273,6 +288,9 @@
         const pdfDownloadBtnWrapper = document.getElementById('pdfDownloadBtnWrapper');
         const downloadPdfBtn = document.getElementById('downloadPdfBtn');
         const qrSection = document.getElementById('qrSection');
+        const windowDetailsList = document.getElementById('windowDetailsList');
+        const zipperDisplay = document.getElementById('zipperDisplay');
+        const mountTypeSelect = document.getElementById('mountType');
 
         // Toggle QR code visibility
         function toggleQRCode() {
@@ -283,13 +301,13 @@
             }
         }
 
-        // Initialize dimensions with fastening dropdown for each window
+        // Initialize dimensions with film and fastening dropdowns for each window
         function initializeDimensions() {
             const count = parseInt(windowCountSelect.value);
             dimensionsInputs.innerHTML = '';
             for (let i = 0; i < count; i++) {
                 const div = document.createElement('div');
-                div.className = 'grid grid-cols-1 md:grid-cols-3 gap-2 p-4 bg-gray-50 rounded-lg border border-gray-200';
+                div.className = 'grid grid-cols-1 md:grid-cols-4 gap-2 p-4 bg-gray-50 rounded-lg border border-gray-200';
                 div.innerHTML = `
                     <div>
                         <label class="block text-sm font-medium text-gray-600 mb-1">Ширина ${i + 1} (м)</label>
@@ -300,6 +318,17 @@
                         <input type="number" step="0.01" data-index="${i}" data-field="height" class="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 dimension-input" placeholder="0.00" min="0">
                     </div>
                     <div>
+                        <label class="block text-sm font-medium text-gray-600 mb-1">Пленка ${i + 1}</label>
+                        <select data-index="${i}" data-field="film" class="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 dimension-film">
+                            <option value="">Выберите</option>
+                            <option value="Прозрачная">Прозрачная</option>
+                            <option value="Тонированная">Тонированная</option>
+                            <option value="Москитная сетка">Москитная сетка</option>
+                            <option value="Полиуретан">Полиуретан</option>
+                            <option value="Тент">Тент</option>
+                        </select>
+                    </div>
+                    <div>
                         <label class="block text-sm font-medium text-gray-600 mb-1">Крепеж ${i + 1}</label>
                         <select data-index="${i}" data-field="fastening" class="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 dimension-fastening">
                             <option value="">Выберите</option>
@@ -308,12 +337,13 @@
                             <option value="полиамидные скобы">полиамидные скобы</option>
                             <option value="металлические скобы">металлические скобы</option>
                             <option value="французские замки">французские замки</option>
+                            <option value="раздвижные шторы">раздвижные шторы</option>
                         </select>
                     </div>
                 `;
                 dimensionsInputs.appendChild(div);
             }
-            document.querySelectorAll('.dimension-input, .dimension-fastening').forEach(input => {
+            document.querySelectorAll('.dimension-input, .dimension-film, .dimension-fastening').forEach(input => {
                 input.addEventListener('input', calculateResults);
             });
         }
@@ -324,23 +354,44 @@
             for (let i = 0; i < count; i++) {
                 const widthInput = document.querySelector(`.dimension-input[data-index="${i}"][data-field="width"]`);
                 const heightInput = document.querySelector(`.dimension-input[data-index="${i}"][data-field="height"]`);
+                const filmSelect = document.querySelector(`.dimension-film[data-index="${i}"]`);
                 const fasteningSelect = document.querySelector(`.dimension-fastening[data-index="${i}"]`);
                 windows.push({
                     width: parseFloat(widthInput?.value) || 0,
                     height: parseFloat(heightInput?.value) || 0,
+                    film: filmSelect?.value || '',
                     fastening: fasteningSelect?.value || ''
                 });
             }
             return windows;
         }
 
+        function calculateWindowCost(city, window) {
+            let basePrice;
+            if (window.fastening === 'раздвижные шторы') {
+                basePrice = 1950;
+            } else {
+            basePrice = priceData[city]?.[window.film]?.[window.fastening] || 0;
+            }
+            let cost = window.width * window.height * basePrice;
+                // Применяем коэффициент 1.2 для тонировки (только если НЕ раздвижные шторы)
+            if (window.film === 'Тонированная' && window.fastening !== 'раздвижные шторы') {
+                cost *= 1.2;
+            }
+                   // 🔹 Для раздвижных штор добавляем: ширина * 3500 руб
+            if (window.fastening === 'раздвижные шторы') {
+                cost += window.width * 3500;
+            }         
+                                   
+            return Math.round(cost);
+        }
+
         function calculateResults() {
             const city = citySelect.value;
-            const filmType = filmTypeSelect.value;
             const zipperLength = parseFloat(zipperLengthInput.value) || 0;
             const coefficient = parseFloat(coefficientInput.value) || 1.1;
            
-            if (!city || !filmType) {
+            if (!city) {
                 resultsContainer.classList.add('hidden');
                 noResultsMessage.classList.remove('hidden');
                 pdfDownloadBtnWrapper.classList.add('hidden');
@@ -351,7 +402,7 @@
             
             let allValid = true;
             for (const win of windows) {
-                if (win.width <= 0 || win.height <= 0 || !win.fastening) {
+                if (win.width <= 0 || win.height <= 0 || !win.film || !win.fastening) {
                     allValid = false;
                     break;
                 }
@@ -366,9 +417,17 @@
 
             let totalArea = 0;
             let totalWidth = 0;
+            let pvcTotalPrice = 0;
+            const windowCosts = [];
+            
             windows.forEach(win => {
-                totalArea += win.width * win.height;
+                const area = win.width * win.height;
+                totalArea += area;
                 totalWidth += win.width;
+                
+                const cost = calculateWindowCost(city, win);
+                pvcTotalPrice += cost;
+                windowCosts.push({ ...win, cost, area });
             });
             
             if (totalArea === 0) {
@@ -381,21 +440,15 @@
             const totalAreaRounded = Math.round(totalArea * 100) / 100;
             const finishedArea = totalAreaRounded * coefficient;
             const finishedAreaRounded = Math.round(finishedArea * 100) / 100;
-
-            // 🔄 Расчет стоимости для каждого окна отдельно
-            let pvcTotalPrice = 0;
-            windows.forEach(win => {
-                const pricePerM2 = priceData[city][filmType][win.fastening] || 0;
-                const windowArea = win.width * win.height;
-                pvcTotalPrice += windowArea * pricePerM2;
-            });
-            pvcTotalPrice = Math.round(pvcTotalPrice);
            
             let strapCost = 0;
+            const hasPolyurethane = windows.some(w => w.film !== 'Полиуретан');
             const hasNonEyelet = windows.some(w => w.fastening !== 'люверсы');
-            if (hasNonEyelet) {
-                const rawStrapCost = (totalWidth / 0.6) * strapPrice[city];
-                strapCost = roundToNearest100(rawStrapCost);
+            
+            // Ремешки считаем, только если есть не-люверсы И нет полиуретана
+            if (hasNonEyelet && !hasPolyurethane) {
+            const rawStrapCost = (totalWidth / 0.6) * strapPrice[city];
+            strapCost = roundToNearest100(rawStrapCost);
             }
            
             const zipperCost = Math.round(zipperLength * zipperPrice[city]);
@@ -406,7 +459,38 @@
             const minMountingCost = city === 'Пенза' ? 5000 : 10000;
             if (woodMountingCost < minMountingCost) woodMountingCost = minMountingCost;
             if (metalMountingCost < minMountingCost) metalMountingCost = minMountingCost;
-           
+
+            // Определяем, какие блоки монтажа показать
+            const mountType = mountTypeSelect.value;
+            let mountingHTML = '';
+
+            if (mountType === 'оба') {
+                mountingHTML += `
+                    <div class="bg-dark-card p-4 rounded-lg shadow-sm border border-gold result-item">
+                        <p class="text-sm text-dark-text mb-1">Монтаж на дерево (не менее ${minMountingCost.toLocaleString()} руб)</p>
+                        <p class="text-xl font-bold text-gold-highlight">${woodMountingCost.toLocaleString()} руб</p>
+                    </div>
+                    <div class="bg-dark-card p-4 rounded-lg shadow-sm border border-gold result-item md:col-span-2">
+                        <p class="text-sm text-dark-text mb-1">Монтаж на металл (не менее ${minMountingCost.toLocaleString()} руб)</p>
+                        <p class="text-xl font-bold text-gold-highlight">${metalMountingCost.toLocaleString()} руб</p>
+                    </div>
+                `;
+            } else if (mountType === 'деревянная поверхность') {
+                mountingHTML += `
+                    <div class="bg-dark-card p-4 rounded-lg shadow-sm border border-gold result-item md:col-span-2">
+                        <p class="text-sm text-dark-text mb-1">Монтаж на дерево (не менее ${minMountingCost.toLocaleString()} руб)</p>
+                        <p class="text-xl font-bold text-gold-highlight">${woodMountingCost.toLocaleString()} руб</p>
+                    </div>
+            `;
+            } else if (mountType === 'металлическая поверхность') {
+    mountingHTML += `
+        <div class="bg-dark-card p-4 rounded-lg shadow-sm border border-gold result-item md:col-span-2">
+            <p class="text-sm text-dark-text mb-1">Монтаж на металл (не менее ${minMountingCost.toLocaleString()} руб)</p>
+            <p class="text-xl font-bold text-gold-highlight">${metalMountingCost.toLocaleString()} руб</p>
+        </div>
+    `;
+}
+
             // Populate results grid
             resultsGrid.innerHTML = `
                 <div class="bg-dark-card p-4 rounded-lg shadow-sm border border-gold result-item">
@@ -434,14 +518,35 @@
                     <p class="text-xl font-bold text-gold-highlight">${preliminaryCost.toLocaleString()} руб</p>
                 </div>
                 <div class="bg-dark-card p-4 rounded-lg shadow-sm border border-gold result-item">
-                    <p class="text-sm text-dark-text mb-1">Монтаж на дерево (не менее ${minMountingCost.toLocaleString()} руб)</p>
-                    <p class="text-xl font-bold text-gold-highlight">${woodMountingCost.toLocaleString()} руб</p>
+                    <p class="text-sm text-dark-text mb-1">Стоимость молнии</p>
+                    <p class="text-xl font-bold text-gold-highlight">${zipperCost.toLocaleString()} руб</p>
                 </div>
                 <div class="bg-dark-card p-4 rounded-lg shadow-sm border border-gold result-item">
-                    <p class="text-sm text-dark-text mb-1">Монтаж на металл (не менее ${minMountingCost.toLocaleString()} руб)</p>
-                    <p class="text-xl font-bold text-gold-highlight">${metalMountingCost.toLocaleString()} руб</p>
+                    <p class="text-sm text-dark-text mb-1">Предварительная стоимость без учета монтажа</p>
+                    <p class="text-xl font-bold text-gold-highlight">${preliminaryCost.toLocaleString()} руб</p>
                 </div>
             `;
+           
+            // Populate window details section
+            windowDetailsList.innerHTML = '';
+            windowCosts.forEach((win, idx) => {
+                const detailDiv = document.createElement('div');
+                detailDiv.className = 'window-detail-card p-4 rounded-lg window-detail-item';
+                detailDiv.innerHTML = `
+                    <p class="text-dark-text text-sm">
+                        <span class="font-bold text-gold-highlight">Окно ${idx + 1}:</span><br>
+                        Ширина: <span class="font-medium">${win.width} м</span> | 
+                        Высота: <span class="font-medium">${win.height} м</span><br>
+                        Пленка: <span class="font-medium">${win.film}</span> | 
+                        Крепеж: <span class="font-medium">${win.fastening}</span><br>
+                        Стоимость: <span class="font-bold text-gold-highlight">${win.cost.toLocaleString()} руб</span>
+                    </p>
+                `;
+                windowDetailsList.appendChild(detailDiv);
+            });
+           
+            // Update zipper display
+            zipperDisplay.textContent = `${zipperLength} м`;
            
             // Build additional info block
             infoList.innerHTML = '';
@@ -452,11 +557,14 @@
                 infoList.appendChild(li);
             }
            
+            const uniqueFilms = [...new Set(windows.map(w => w.film).filter(f => f))];
             const uniqueFastenings = [...new Set(windows.map(w => w.fastening).filter(f => f))];
+            const filmDisplay = uniqueFilms.join(', ');
             const fasteningDisplay = uniqueFastenings.join(', ');
            
             if (city === "СПБ") {
-                addInfoItem(`Пленка ПВХ 700 микрон с УФ покрытием, морозостойкая, самозатухающая ${filmType.toLowerCase()}`);
+                addInfoItem(`Пленка ПВХ 700 микрон с УФ покрытием, морозостойкая, самозатухающая`);
+                addInfoItem(`Доступные типы пленки: ${filmDisplay}`);
                 addInfoItem(`Крепеж: ${fasteningDisplay}`);
                 addInfoItem(`Тракторная молния: ${zipperPrice[city]} руб/пог.м`);
                 addInfoItem(`Стоимость москитной сетки: 1700 руб/м²`);
@@ -464,7 +572,8 @@
                 addInfoItem(`Монтаж на деревянную поверхность: ${mountingWoodPrice[city]} руб/м²`);
                 addInfoItem(`Монтаж на металлическую поверхность: ${mountingMetalPrice[city]} руб/м²`);
             } else if (city === "Другие") {
-                addInfoItem(`Пленка ПВХ 700 микрон с УФ покрытием, морозостойкая, самозатухающая ${filmType.toLowerCase()}`);
+                addInfoItem(`Пленка ПВХ 700 микрон с УФ покрытием, морозостойкая, самозатухающая`);
+                addInfoItem(`Доступные типы пленки: ${filmDisplay}`);
                 addInfoItem(`Крепеж: ${fasteningDisplay}`);
                 addInfoItem(`Тракторная молния: ${zipperPrice[city]} руб/пог.м`);
                 addInfoItem(`Стоимость москитной сетки: 1500 руб/м²`);
@@ -474,7 +583,8 @@
                 addInfoItem(`Монтаж на металлическую поверхность: ${mountingMetalPrice[city]} руб/м²`);
                 addInfoItem(`Доставка СДЭК/Яндекс: 1000 руб`);
             } else if (city === "Пенза") {
-                addInfoItem(`Пленка ПВХ 700 микрон с УФ покрытием, морозостойкая, самозатухающая ${filmType.toLowerCase()}`);
+                addInfoItem(`Пленка ПВХ 700 микрон с УФ покрытием, морозостойкая, самозатухающая`);
+                addInfoItem(`Доступные типы пленки: ${filmDisplay}`);
                 addInfoItem(`Крепеж: ${fasteningDisplay}`);
                 addInfoItem(`Тракторная молния: ${zipperPrice[city]} руб/пог.м`);
                 addInfoItem(`Стоимость москитной сетки: 1500 руб/м²`);
@@ -522,13 +632,11 @@
        
         // Event listeners
         citySelect.addEventListener('change', calculateResults);
-        filmTypeSelect.addEventListener('change', calculateResults);
         windowCountSelect.addEventListener('change', () => { initializeDimensions(); calculateResults(); });
         coefficientInput.addEventListener('input', calculateResults);
         zipperLengthInput.addEventListener('input', calculateResults);
         advancePaidSelect.addEventListener('change', () => {
             toggleQRCode();
-            // Recalculate to update QR visibility in results if already shown
             if (!resultsContainer.classList.contains('hidden')) {
                 calculateResults();
             }
@@ -538,10 +646,11 @@
         initializeDimensions();
        
         document.addEventListener('input', function(e) {
-            if(e.target.classList && (e.target.classList.contains('dimension-input') || e.target.classList.contains('dimension-fastening'))) {
+            if(e.target.classList && (e.target.classList.contains('dimension-input') || e.target.classList.contains('dimension-film') || e.target.classList.contains('dimension-fastening'))) {
                 calculateResults();
             }
         });
+        mountTypeSelect.addEventListener('change', calculateResults);
     </script>
 </body>
 </html>
