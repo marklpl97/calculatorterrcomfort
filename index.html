@@ -309,20 +309,24 @@
             return windows;
         }
 
-        function calculateWindowCost(city, window) {
+        function calculateWindowCost(city, window, coefficient) {
             let basePrice = priceData[city]?.[window.film]?.[window.fastening] || 0;
-            
-            // Раздвижные шторы всегда 1950 руб/м² как база
+    
+            // 🎯 Раздвижные шторы: фиксированная база 1950 руб/м²
             if (window.fastening === 'раздвижные шторы') basePrice = 1950;
-            
-            let cost = window.width * window.height * basePrice;
-            
-           
-            // Доплата за шторы: ширина × 3500
+    
+            // ✅ Сначала применяем коэффициент к площади: ширина * высота * коэффициент
+            const adjustedArea = window.width * window.height * coefficient;
+    
+   
+            // Основная стоимость: скорректированная площадь × цена
+            let cost = adjustedArea * basePrice;
+    
+            // 🪟 Доплата за раздвижные шторы: ширина × 3500 (не умножается на коэффициент)
             if (window.fastening === 'раздвижные шторы') {
-                cost += window.width * curtainExtraPrice;
+            cost += window.width * curtainExtraPrice;
             }
-            
+    
             return Math.round(cost);
         }
 
@@ -357,7 +361,7 @@
             windows.forEach(win => {
                 const area = win.width * win.height;
                 totalArea += area; totalWidth += win.width;
-                const cost = calculateWindowCost(city, win);
+                const cost = calculateWindowCost(city, win, coefficient); // 👈 передаём коэффициент
                 pvcTotalPrice += cost;
                 windowCosts.push({ ...win, cost, area });
             });
