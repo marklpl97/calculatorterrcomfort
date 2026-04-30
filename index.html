@@ -378,7 +378,7 @@
            
             // Ремешки: не считаем, если есть полиуретан
             let strapCost = 0;
-            const hasPolyurethane = windows.some(w => w.film !== 'Полиуретан');
+            const hasPolyurethane = windows.some(w => w.film === 'Полиуретан');
             const hasNonEyelet = windows.some(w => w.fastening !== 'люверсы');
             if (hasNonEyelet && !hasPolyurethane) {
                 strapCost = roundToNearest100((totalWidth / 0.6) * strapPrice[city]);
