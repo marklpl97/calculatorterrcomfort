@@ -317,11 +317,7 @@
             
             let cost = window.width * window.height * basePrice;
             
-            // Тонировка ×1.2 (не применяется к шторам)
-            if (window.film === 'Тонированная' && window.fastening !== 'раздвижные шторы') {
-                cost *= 1.2;
-            }
-            
+           
             // Доплата за шторы: ширина × 3500
             if (window.fastening === 'раздвижные шторы') {
                 cost += window.width * curtainExtraPrice;
@@ -376,12 +372,11 @@
             const totalAreaRounded = Math.round(totalArea * 100) / 100;
             const finishedAreaRounded = Math.round((totalAreaRounded * coefficient) * 100) / 100;
            
-            // Ремешки: не считаем, если есть полиуретан
             let strapCost = 0;
-            const hasPolyurethane = windows.some(w => w.film === 'Полиуретан');
             const hasNonEyelet = windows.some(w => w.fastening !== 'люверсы');
-            if (hasNonEyelet && !hasPolyurethane) {
-                strapCost = roundToNearest100((totalWidth / 0.6) * strapPrice[city]);
+            if (hasNonEyelet) {
+                const rawStrapCost = (totalWidth / 0.6) * strapPrice[city];
+                strapCost = roundToNearest100(rawStrapCost);
             }
            
             const zipperCost = Math.round(zipperLength * zipperPrice[city]);
