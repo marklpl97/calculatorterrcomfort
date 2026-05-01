@@ -11,21 +11,12 @@
             theme: {
                 extend: {
                     colors: {
-                        'blue-50': '#eff6ff',
-                        'indigo-100': '#e0e7ff',
-                        'green-50': '#f0fdf4',
-                        'emerald-50': '#ecfdf5',
-                        'green-200': '#bbf7d0',
-                        'gold': '#D4AF37',
-                        'dark-bg': '#2d2d2d',
-                        'dark-card': '#3a3a3a',
-                        'dark-text': '#ffffff',
+                        'blue-50': '#eff6ff', 'indigo-100': '#e0e7ff', 'green-50': '#f0fdf4',
+                        'emerald-50': '#ecfdf5', 'green-200': '#bbf7d0', 'gold': '#D4AF37',
+                        'dark-bg': '#6b635b', 'dark-card': '#3a3a3a', 'dark-text': '#ffffff',
                         'gold-highlight': '#F5C54B'
                     },
-                    fontFamily: {
-                        'serif': ['Georgia', 'serif'],
-                        'sans': ['Inter', 'sans-serif']
-                    }
+                    fontFamily: { 'serif': ['Georgia', 'serif'], 'sans': ['Inter', 'sans-serif'] }
                 }
             }
         }
@@ -35,33 +26,49 @@
             body { background: white !important; padding: 0 !important; margin: 0 !important; }
             .no-print { display: none !important; }
             .pdf-print-area {
-                background: #2d2d2d !important;
-                -webkit-print-color-adjust: exact !important;
-                print-color-adjust: exact !important;
-                margin: 0 !important; padding: 0 !important;
+                background: #2d2d2d !important; -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important; margin: 0 !important; padding: 0 !important;
                 box-sizing: border-box; width: 100% !important;
             }
             #pdfExportArea {
-                margin: 0 !important; padding: 0 !important;
-                max-width: none !important; width: 100% !important;
-                box-sizing: border-box;
+                margin: 0 !important; padding: 0 !important; max-width: none !important;
+                width: 100% !important; box-sizing: border-box;
             }
-            .bg-dark-bg { background-color: #2d2d2d !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; padding: 0.25rem 0.5rem !important; margin: 0 !important; }
-            .bg-dark-card { background-color: #3a3a3a !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; padding: 0.25rem !important; }
+            .bg-dark-bg {
+                background-color: #2d2d2d !important; -webkit-print-color-adjust: exact;
+                print-color-adjust: exact; padding: 1.25rem !important; margin: 0 !important;
+            }
+            .bg-dark-card {
+                background-color: #3a3a3a !important; -webkit-print-color-adjust: exact;
+                print-color-adjust: exact; padding: 0.5rem !important;
+            }
             .border-gold { border-color: #D4AF37 !important; }
             .text-gold-highlight { color: #F5C54B !important; }
-            .result-item { break-inside: avoid; page-break-inside: avoid; }
-            .border-b-2 { padding-bottom: 0.3rem !important; margin-bottom: 0.5rem !important; }
-            .window-detail-item { break-inside: avoid; }
+            .border-b-2 { padding-bottom: 0.4rem !important; margin-bottom: 0.6rem !important; }
+            /* Запрет разрыва блоков в PDF */
+            .result-item, .window-detail-card, #zipperInfo, #summarySection, #additionalInfo, #qrSection {
+                break-inside: avoid !important; page-break-inside: avoid !important;
+            }
         }
         .result-item { transition: all 0.2s ease; }
         .result-item:hover { transform: translateY(-2px); box-shadow: 0 4px 8px rgba(0,0,0,0.3); }
-        .custom-bullet { display: inline-block; width: 8px; height: 8px; background-color: #F5C54B; border-radius: 2px; margin-right: 12px; flex-shrink: 0; margin-top: 8px; }
+        .custom-bullet {
+            display: inline-block; width: 8px; height: 8px; background-color: #F5C54B;
+            border-radius: 2px; margin-right: 12px; flex-shrink: 0; margin-top: 8px;
+        }
         .download-btn { transition: all 0.2s ease; }
         .download-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0,0,0,0.15); }
         .qr-container { transition: all 0.3s ease; max-height: 500px; overflow: hidden; }
         .qr-container.hidden { max-height: 0; padding: 0 !important; margin: 0 !important; border: none !important; }
-        .window-detail-card { background: rgba(58, 58, 58, 0.4); border: 1px solid #555; border-left: 3px solid #F5C54B; }
+        .window-detail-card {
+            background: rgba(58, 58, 58, 0.4); border: 1px solid #555;
+            border-left: 3px solid #F5C54B;
+        }
+        /* Скруглённые углы для PDF */
+        .pdf-rounded-container {
+            border-radius: 16px;
+            overflow: hidden; /* Обеспечивает чёткое скругление при рендеринге */
+        }
     </style>
 </head>
 <body class="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-4">
@@ -69,19 +76,15 @@
         <!-- Main Card with Form -->
         <div class="bg-white rounded-2xl shadow-xl p-6 md:p-8 no-print">
             <h1 class="text-3xl md:text-4xl font-bold text-center text-gray-800 mb-8">РАСЧЕТ СТОИМОСТИ ОКОН ПВХ</h1>
-           
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
                 <!-- City -->
                 <div>
                     <label class="block text-sm font-semibold text-gray-700 mb-2">Город</label>
                     <select id="city" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-base">
                         <option value="">Выберите город</option>
-                        <option value="СПБ">СПБ</option>
-                        <option value="Пенза">Пенза</option>
-                        <option value="Другие">Другие города</option>
+                        <option value="СПБ">СПБ</option><option value="Пенза">Пенза</option><option value="Другие">Другие города</option>
                     </select>
                 </div>
-
                 <!-- Window Count -->
                 <div>
                     <label class="block text-sm font-semibold text-gray-700 mb-2">Количество окон</label>
@@ -91,13 +94,11 @@
                         <option value="7">7</option><option value="8">8</option><option value="9">9</option><option value="10">10</option>
                     </select>
                 </div>
-
                 <!-- Coefficient -->
                 <div>
                     <label class="block text-sm font-semibold text-gray-700 mb-2">Коэффициент расчета</label>
                     <input type="number" id="coefficient" step="0.1" value="1.1" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-base" min="1" max="2">
                 </div>
-
                 <!-- Mount Type -->
                 <div>
                     <label class="block text-sm font-semibold text-gray-700 mb-2">Монтаж</label>
@@ -107,29 +108,24 @@
                         <option value="металлическая поверхность">Металлическая поверхность</option>
                     </select>
                 </div>
-
                 <!-- Zipper -->
                 <div class="md:col-span-2">
                     <label class="block text-sm font-semibold text-gray-700 mb-2">Молния (пог. м)</label>
                     <input type="number" id="zipperLength" step="0.01" value="0.00" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-base" min="0" placeholder="0.00">
                 </div>
-
                 <!-- Advance Payment -->
                 <div class="md:col-span-2">
                     <label class="block text-sm font-semibold text-gray-700 mb-2">Аванс внесен</label>
                     <select id="advancePaid" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-base">
-                        <option value="нет">Нет</option>
-                        <option value="да">Да</option>
+                        <option value="нет">Нет</option><option value="да">Да</option>
                     </select>
                 </div>
             </div>
-
             <!-- Dimensions Input -->
             <div id="dimensionsContainer" class="mb-8">
                 <h3 class="text-lg font-semibold text-gray-800 mb-4">Размеры окон (м)</h3>
                 <div id="dimensionsInputs" class="space-y-4"></div>
             </div>
-
             <!-- Download PDF Button -->
             <div id="pdfDownloadBtnWrapper" class="flex justify-center mt-6 mb-4 no-print hidden">
                 <button id="downloadPdfBtn" class="bg-gradient-to-r from-green-600 to-emerald-700 text-white font-bold py-3 px-8 rounded-xl shadow-lg download-btn flex items-center gap-2 text-lg">
@@ -141,11 +137,10 @@
         <!-- Results Section -->
         <div id="resultsContainer" class="hidden mt-8">
             <div id="pdfExportArea" class="pdf-print-area">
-                <div class="bg-dark-bg rounded-xl shadow-2xl p-6 border border-gold">
-                    <div class="flex justify-center mb-6">
-                        <div class="text-center">
-                            <img src="images/logoterrcomfort.png" alt="Триколория Комфорта" style="max-height: 60px; width: auto;"> 
-                        </div>
+                <div class="bg-dark-bg rounded-xl shadow-2xl p-6 border border-gold pdf-rounded-container">
+                    <!-- Logo -->
+                    <div class="flex justify-center items-center mb-6">
+                        <img src="images/logoterrcomfort.png" alt="Триколория Комфорта" style="max-height: 60px; width: auto; display: block;">
                     </div>
 
                     <div class="border-b-2 border-gold pb-4 mb-6">
@@ -160,20 +155,25 @@
                         <div id="windowDetailsList" class="space-y-3"></div>
                     </div>
 
-                    <!-- Zipper Info -->
+                    <!-- Zipper Info (перенесён сразу после окон) -->
                     <div id="zipperInfo" class="bg-dark-card rounded-lg p-4 mb-6 border-l-4 border-gold">
                         <p class="text-dark-text"><span class="font-medium">Молния:</span> <span id="zipperDisplay" class="text-gold-highlight font-bold"></span></p>
                     </div>
 
+                    <!-- Summary Section (Доставка + Монтаж) -->
+                    <div id="summarySection" class="mb-6"></div>
+
+                    <!-- Additional Info -->
                     <div id="additionalInfo" class="bg-dark-card rounded-lg p-5 border-l-4 border-gold mb-6">
                         <ul id="infoList" class="text-dark-text leading-relaxed text-base space-y-2 list-none"></ul>
                     </div>
 
-                    <div class="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg p-5 text-center">
+                    <!-- Contact -->
+                    <div class="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg p-5 text-center mb-6">
                         <p class="text-gray-800 font-medium text-base">
                             Ваш личный менеджер по продажам компании Триколория Комфорта:
                             <span class="font-bold">тел/max +7 995 282 4484</span>
-                            <a href="http://www.terrcomfort.ru" target="_blank" class="text-blue-600 hover:underline ml-2">www.tercomfort.ru</a>
+                            <a href="http://www.terrcomfort.ru" target="_blank" class="text-blue-600 hover:underline ml-2">www.terrcomfort.ru</a>
                         </p>
                     </div>
 
@@ -223,7 +223,7 @@
         const mountingWoodPrice = { 'Пенза': 600, 'Другие': 700, 'СПБ': 700 };
         const mountingMetalPrice = { 'Пенза': 800, 'Другие': 900, 'СПБ': 900 };
         const zipperPrice = { 'Пенза': 850, 'Другие': 850, 'СПБ': 850 };
-        const curtainExtraPrice = 3500; // за пог.м ширины для раздвижных штор
+        const curtainExtraPrice = 3500;
 
         function roundToNearest100(value) { return Math.floor(value / 100) * 100; }
 
@@ -244,10 +244,10 @@
         const qrSection = document.getElementById('qrSection');
         const windowDetailsList = document.getElementById('windowDetailsList');
         const zipperDisplay = document.getElementById('zipperDisplay');
+        const summarySection = document.getElementById('summarySection');
 
         function toggleQRCode() {
-            if (advancePaidSelect.value === 'да') qrSection.classList.remove('hidden');
-            else qrSection.classList.add('hidden');
+            advancePaidSelect.value === 'да' ? qrSection.classList.remove('hidden') : qrSection.classList.add('hidden');
         }
 
         function initializeDimensions() {
@@ -257,38 +257,24 @@
                 const div = document.createElement('div');
                 div.className = 'grid grid-cols-1 md:grid-cols-4 gap-2 p-4 bg-gray-50 rounded-lg border border-gray-200';
                 div.innerHTML = `
-                    <div>
-                        <label class="block text-sm font-medium text-gray-600 mb-1">Ширина ${i + 1} (м)</label>
-                        <input type="number" step="0.01" data-index="${i}" data-field="width" class="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 dimension-input" placeholder="0.00" min="0">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-600 mb-1">Высота ${i + 1} (м)</label>
-                        <input type="number" step="0.01" data-index="${i}" data-field="height" class="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 dimension-input" placeholder="0.00" min="0">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-600 mb-1">Пленка ${i + 1}</label>
+                    <div><label class="block text-sm font-medium text-gray-600 mb-1">Ширина ${i + 1} (м)</label>
+                        <input type="number" step="0.01" data-index="${i}" data-field="width" class="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 dimension-input" placeholder="0.00" min="0"></div>
+                    <div><label class="block text-sm font-medium text-gray-600 mb-1">Высота ${i + 1} (м)</label>
+                        <input type="number" step="0.01" data-index="${i}" data-field="height" class="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 dimension-input" placeholder="0.00" min="0"></div>
+                    <div><label class="block text-sm font-medium text-gray-600 mb-1">Пленка ${i + 1}</label>
                         <select data-index="${i}" data-field="film" class="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 dimension-film">
                             <option value="">Выберите</option>
-                            <option value="Прозрачная">Прозрачная</option>
-                            <option value="Тонированная">Тонированная</option>
-                            <option value="Москитная сетка">Москитная сетка</option>
-                            <option value="Полиуретан">Полиуретан</option>
+                            <option value="Прозрачная">Прозрачная</option><option value="Тонированная">Тонированная</option>
+                            <option value="Москитная сетка">Москитная сетка</option><option value="Полиуретан">Полиуретан</option>
                             <option value="Тент">Тент</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-600 mb-1">Крепеж ${i + 1}</label>
+                        </select></div>
+                    <div><label class="block text-sm font-medium text-gray-600 mb-1">Крепеж ${i + 1}</label>
                         <select data-index="${i}" data-field="fastening" class="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 dimension-fastening">
                             <option value="">Выберите</option>
-                            <option value="люверсы">люверсы</option>
-                            <option value="пластиковые ремешки">пластиковые ремешки</option>
-                            <option value="полиамидные скобы">полиамидные скобы</option>
-                            <option value="металлические скобы">металлические скобы</option>
-                            <option value="французские замки">французские замки</option>
-                            <option value="раздвижные шторы">раздвижные шторы</option>
-                        </select>
-                    </div>
-                `;
+                            <option value="люверсы">люверсы</option><option value="пластиковые ремешки">пластиковые ремешки</option>
+                            <option value="полиамидные скобы">полиамидные скобы</option><option value="металлические скобы">металлические скобы</option>
+                            <option value="французские замки">французские замки</option><option value="раздвижные шторы">раздвижные шторы</option>
+                        </select></div>`;
                 dimensionsInputs.appendChild(div);
             }
             document.querySelectorAll('.dimension-input, .dimension-film, .dimension-fastening').forEach(input => {
@@ -300,33 +286,26 @@
             const windows = [];
             const count = parseInt(windowCountSelect.value);
             for (let i = 0; i < count; i++) {
-                const w = parseFloat(document.querySelector(`.dimension-input[data-index="${i}"][data-field="width"]`)?.value) || 0;
-                const h = parseFloat(document.querySelector(`.dimension-input[data-index="${i}"][data-field="height"]`)?.value) || 0;
-                const f = document.querySelector(`.dimension-film[data-index="${i}"]`)?.value || '';
-                const fs = document.querySelector(`.dimension-fastening[data-index="${i}"]`)?.value || '';
-                windows.push({ width: w, height: h, film: f, fastening: fs });
+                windows.push({
+                    width: parseFloat(document.querySelector(`.dimension-input[data-index="${i}"][data-field="width"]`)?.value) || 0,
+                    height: parseFloat(document.querySelector(`.dimension-input[data-index="${i}"][data-field="height"]`)?.value) || 0,
+                    film: document.querySelector(`.dimension-film[data-index="${i}"]`)?.value || '',
+                    fastening: document.querySelector(`.dimension-fastening[data-index="${i}"]`)?.value || ''
+                });
             }
             return windows;
         }
 
         function calculateWindowCost(city, window, coefficient) {
             let basePrice = priceData[city]?.[window.film]?.[window.fastening] || 0;
-    
-            // 🎯 Раздвижные шторы: фиксированная база 1950 руб/м²
             if (window.fastening === 'раздвижные шторы') basePrice = 1950;
-    
-            // ✅ Сначала применяем коэффициент к площади: ширина * высота * коэффициент
+            
             const adjustedArea = window.width * window.height * coefficient;
-    
-   
-            // Основная стоимость: скорректированная площадь × цена
             let cost = adjustedArea * basePrice;
-    
-            // 🪟 Доплата за раздвижные шторы: ширина × 3500 (не умножается на коэффициент)
-            if (window.fastening === 'раздвижные шторы') {
-            cost += window.width * curtainExtraPrice;
-            }
-    
+            
+            if (window.film === 'Тонированная' && window.fastening !== 'раздвижные шторы') cost *= 1.2;
+            if (window.fastening === 'раздвижные шторы') cost += window.width * curtainExtraPrice;
+            
             return Math.round(cost);
         }
 
@@ -347,7 +326,6 @@
             for (const win of windows) {
                 if (win.width <= 0 || win.height <= 0 || !win.film || !win.fastening) { allValid = false; break; }
             }
-            
             if (!allValid) {
                 resultsContainer.classList.add('hidden');
                 noResultsMessage.classList.remove('hidden');
@@ -361,7 +339,7 @@
             windows.forEach(win => {
                 const area = win.width * win.height;
                 totalArea += area; totalWidth += win.width;
-                const cost = calculateWindowCost(city, win, coefficient); // 👈 передаём коэффициент
+                const cost = calculateWindowCost(city, win, coefficient);
                 pvcTotalPrice += cost;
                 windowCosts.push({ ...win, cost, area });
             });
@@ -376,11 +354,12 @@
             const totalAreaRounded = Math.round(totalArea * 100) / 100;
             const finishedAreaRounded = Math.round((totalAreaRounded * coefficient) * 100) / 100;
            
+            // Стоимость ремешков (не считаем, если есть Полиуретан)
             let strapCost = 0;
             const hasNonEyelet = windows.some(w => w.fastening !== 'люверсы');
-            if (hasNonEyelet) {
-                const rawStrapCost = (totalWidth / 0.6) * strapPrice[city];
-                strapCost = roundToNearest100(rawStrapCost);
+            const hasPolyurethane = windows.some(w => w.film === 'Полиуретан');
+            if (hasNonEyelet && !hasPolyurethane) {
+                strapCost = roundToNearest100((totalWidth / 0.6) * strapPrice[city]);
             }
            
             const zipperCost = Math.round(zipperLength * zipperPrice[city]);
@@ -392,77 +371,53 @@
             if (woodMountingCost < minMountingCost) woodMountingCost = minMountingCost;
             if (metalMountingCost < minMountingCost) metalMountingCost = minMountingCost;
            
-            // Render Mounting Blocks based on selection
             const mountType = mountTypeSelect.value;
             let mountingHTML = '';
             if (mountType === 'оба') {
-                mountingHTML += `
-                <div class="bg-dark-card p-4 rounded-lg shadow-sm border border-gold result-item">
+            mountingHTML += `
+                <div class="bg-dark-card p-4 rounded-lg shadow-sm border border-gold result-item h-full flex flex-col justify-center">
                     <p class="text-sm text-dark-text mb-1">Монтаж на дерево (не менее ${minMountingCost.toLocaleString()} руб)</p>
                     <p class="text-xl font-bold text-gold-highlight">${woodMountingCost.toLocaleString()} руб</p>
                 </div>
-                <div class="bg-dark-card p-4 rounded-lg shadow-sm border border-gold result-item md:col-span-2">
-                    <p class="text-sm text-dark-text mb-1">Монтаж на металл (не менее ${minMountingCost.toLocaleString()} руб)</p>
-                    <p class="text-xl font-bold text-gold-highlight">${metalMountingCost.toLocaleString()} руб</p>
-                </div>`;
-            } else if (mountType === 'деревянная поверхность') {
-                mountingHTML += `
-                <div class="bg-dark-card p-4 rounded-lg shadow-sm border border-gold result-item md:col-span-2">
-                    <p class="text-sm text-dark-text mb-1">Монтаж на дерево (не менее ${minMountingCost.toLocaleString()} руб)</p>
-                    <p class="text-xl font-bold text-gold-highlight">${woodMountingCost.toLocaleString()} руб</p>
-                </div>`;
-            } else if (mountType === 'металлическая поверхность') {
-                mountingHTML += `
-                <div class="bg-dark-card p-4 rounded-lg shadow-sm border border-gold result-item md:col-span-2">
+                <div class="bg-dark-card p-4 rounded-lg shadow-sm border border-gold result-item h-full flex flex-col justify-center">
                     <p class="text-sm text-dark-text mb-1">Монтаж на металл (не менее ${minMountingCost.toLocaleString()} руб)</p>
                     <p class="text-xl font-bold text-gold-highlight">${metalMountingCost.toLocaleString()} руб</p>
                 </div>`;
             }
 
             resultsGrid.innerHTML = `
-                <div class="bg-dark-card p-4 rounded-lg shadow-sm border border-gold result-item">
-                    <p class="text-sm text-dark-text mb-1">Общая площадь окон</p>
-                    <p class="text-xl font-bold text-gold-highlight">${totalAreaRounded} м²</p>
-                </div>
-                <div class="bg-dark-card p-4 rounded-lg shadow-sm border border-gold result-item">
-                    <p class="text-sm text-dark-text mb-1">Площадь готового окна</p>
-                    <p class="text-xl font-bold text-gold-highlight">${finishedAreaRounded} м²</p>
-                </div>
-                <div class="bg-dark-card p-4 rounded-lg shadow-sm border border-gold result-item">
-                    <p class="text-sm text-dark-text mb-1">Стоимость ПВХ окон</p>
-                    <p class="text-xl font-bold text-gold-highlight">${pvcTotalPrice.toLocaleString()} руб</p>
-                </div>
-                <div class="bg-dark-card p-4 rounded-lg shadow-sm border border-gold result-item">
-                    <p class="text-sm text-dark-text mb-1">Стоимость ремешков</p>
-                    <p class="text-xl font-bold text-gold-highlight">${strapCost.toLocaleString()} руб</p>
-                </div>
-                <div class="bg-dark-card p-4 rounded-lg shadow-sm border border-gold result-item">
-                    <p class="text-sm text-dark-text mb-1">Стоимость молнии</p>
-                    <p class="text-xl font-bold text-gold-highlight">${zipperCost.toLocaleString()} руб</p>
-                </div>
-                <div class="bg-dark-card p-4 rounded-lg shadow-sm border border-gold result-item">
-                    <p class="text-sm text-dark-text mb-1">Предварительная стоимость без учета монтажа</p>
-                    <p class="text-xl font-bold text-gold-highlight">${preliminaryCost.toLocaleString()} руб</p>
-                </div>
-                ${mountingHTML}
-            `;
+                <div class="bg-dark-card p-4 rounded-lg shadow-sm border border-gold result-item"><p class="text-sm text-dark-text mb-1">Общая площадь окон</p><p class="text-xl font-bold text-gold-highlight">${totalAreaRounded} м²</p></div>
+                <div class="bg-dark-card p-4 rounded-lg shadow-sm border border-gold result-item"><p class="text-sm text-dark-text mb-1">Площадь готового окна</p><p class="text-xl font-bold text-gold-highlight">${finishedAreaRounded} м²</p></div>
+                <div class="bg-dark-card p-4 rounded-lg shadow-sm border border-gold result-item"><p class="text-sm text-dark-text mb-1">Стоимость ПВХ окон</p><p class="text-xl font-bold text-gold-highlight">${pvcTotalPrice.toLocaleString()} руб</p></div>
+                <div class="bg-dark-card p-4 rounded-lg shadow-sm border border-gold result-item"><p class="text-sm text-dark-text mb-1">Стоимость ремешков</p><p class="text-xl font-bold text-gold-highlight">${strapCost.toLocaleString()} руб</p></div>
+                <div class="bg-dark-card p-4 rounded-lg shadow-sm border border-gold result-item"><p class="text-sm text-dark-text mb-1">Стоимость молнии</p><p class="text-xl font-bold text-gold-highlight">${zipperCost.toLocaleString()} руб</p></div>
+                <div class="bg-dark-card p-4 rounded-lg shadow-sm border border-gold result-item"><p class="text-sm text-dark-text mb-1">Предварительная стоимость без учета монтажа</p><p class="text-xl font-bold text-gold-highlight">${preliminaryCost.toLocaleString()} руб</p></div>
+                ${mountingHTML}`;
            
             // Window Details
             windowDetailsList.innerHTML = '';
             windowCosts.forEach((win, idx) => {
-                const detailDiv = document.createElement('div');
-                detailDiv.className = 'window-detail-card p-4 rounded-lg window-detail-item';
-                detailDiv.innerHTML = `
-                    <p class="text-dark-text text-sm">
-                        <span class="font-bold text-gold-highlight">Окно ${idx + 1}:</span><br>
-                        Ширина: <span class="font-medium">${win.width} м</span> | Высота: <span class="font-medium">${win.height} м</span><br>
-                        Пленка: <span class="font-medium">${win.film}</span> | Крепеж: <span class="font-medium">${win.fastening}</span><br>
-                        Стоимость: <span class="font-bold text-gold-highlight">${win.cost.toLocaleString()} руб</span>
-                    </p>`;
-                windowDetailsList.appendChild(detailDiv);
+                const div = document.createElement('div');
+                div.className = 'window-detail-card p-4 rounded-lg window-detail-item';
+                div.innerHTML = `<p class="text-dark-text text-sm"><span class="font-bold text-gold-highlight">Окно ${idx + 1}:</span><br>Ширина: <span class="font-medium">${win.width} м</span> | Высота: <span class="font-medium">${win.height} м</span><br>Пленка: <span class="font-medium">${win.film}</span> | Крепеж: <span class="font-medium">${win.fastening}</span><br>Стоимость: <span class="font-bold text-gold-highlight">${win.cost.toLocaleString()} руб</span></p>`;
+                windowDetailsList.appendChild(div);
             });
-           
+            
             zipperDisplay.textContent = `${zipperLength} м`;
+           
+            // Summary Section (Доставка + Монтаж)
+            summarySection.innerHTML = '';
+            const totalWithDelivery = preliminaryCost + 1000;
+            let mountingDisplay = mountType === 'оба' ? `Дерево: ${woodMountingCost.toLocaleString()} руб / Металл: ${metalMountingCost.toLocaleString()} руб` : `${mountType === 'деревянная поверхность' ? woodMountingCost : metalMountingCost}.toLocaleString()} руб`;
+            
+            const summaryDiv = document.createElement('div');
+            summaryDiv.className = 'bg-dark-card p-4 rounded-lg border-2 border-gold mt-4';
+            summaryDiv.innerHTML = `<div class="text-white text-sm space-y-3">
+                <div class="flex justify-between items-center border-b border-gray-600 pb-2"><span>Предварительная стоимость:</span><span class="font-medium">${preliminaryCost.toLocaleString()} руб</span></div>
+                <div class="flex justify-between items-center border-b border-gold pb-2"><span class="font-bold">Общая стоимость с доставкой:</span><span class="font-bold text-gold-highlight">${totalWithDelivery.toLocaleString()} руб</span></div>
+                <div class="flex justify-between items-center pt-1"><span>Стоимость монтажа${mountType !== 'оба' ? ' (' + mountType + ')' : ''}:</span><span class="font-medium text-gold-highlight">${mountingDisplay}</span></div>
+            </div>`;
+            summarySection.appendChild(summaryDiv);
            
             // Additional Info
             infoList.innerHTML = '';
@@ -472,10 +427,8 @@
                 li.innerHTML = `<span class="custom-bullet"></span><span>${text}</span>`;
                 infoList.appendChild(li);
             }
-           
             const uniqueFilms = [...new Set(windows.map(w => w.film).filter(f => f))];
             const uniqueFastenings = [...new Set(windows.map(w => w.fastening).filter(f => f))];
-           
             addInfoItem(`Пленка ПВХ 700 микрон с УФ покрытием, морозостойкая, самозатухающая`);
             addInfoItem(`Доступные типы пленки: ${uniqueFilms.join(', ')}`);
             addInfoItem(`Крепеж: ${uniqueFastenings.join(', ')}`);
@@ -507,11 +460,19 @@
             btn.disabled = true;
 
             const opt = {
-                margin: [5, 5, 0, 0],
-                filename: `Коммерческое_предложение_Триколория_Комфорта.pdf`,
+                margin: [5, 5, 5, 5],
+                filename: 'Коммерческое_предложение_Триколория_Комфорта.pdf',
                 image: { type: 'jpeg', quality: 0.98 },
-                html2canvas: { scale: 2, width: 881, letterRendering: true, useCORS: true, logging: false, scrollY: 0 },
-                jsPDF: { unit: 'mm', format: [180, 260], orientation: 'portrait' }
+                html2canvas: { 
+                    scale: 2, 
+                    useCORS: true,  // ✅ Исправлено
+                    logging: false, 
+                    scrollY: 0,
+                    backgroundColor: '#2d2d2d',
+                    allowTaint: true
+                },
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+                pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
             };
            
             html2pdf().set(opt).from(element).save().then(() => {
@@ -538,7 +499,6 @@
         downloadPdfBtn.addEventListener('click', generatePDF);
        
         initializeDimensions();
-       
         document.addEventListener('input', function(e) {
             if(e.target.classList && (e.target.classList.contains('dimension-input') || e.target.classList.contains('dimension-film') || e.target.classList.contains('dimension-fastening'))) {
                 calculateResults();
