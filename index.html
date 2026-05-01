@@ -374,7 +374,7 @@
             const mountType = mountTypeSelect.value;
             let mountingHTML = '';
             if (mountType === 'оба') {
-            mountingHTML += `
+                mountingHTML += `
                 <div class="bg-dark-card p-4 rounded-lg shadow-sm border border-gold result-item h-full flex flex-col justify-center">
                     <p class="text-sm text-dark-text mb-1">Монтаж на дерево (не менее ${minMountingCost.toLocaleString()} руб)</p>
                     <p class="text-xl font-bold text-gold-highlight">${woodMountingCost.toLocaleString()} руб</p>
@@ -384,14 +384,13 @@
                     <p class="text-xl font-bold text-gold-highlight">${metalMountingCost.toLocaleString()} руб</p>
                 </div>`;
             }
-
             resultsGrid.innerHTML = `
                 <div class="bg-dark-card p-4 rounded-lg shadow-sm border border-gold result-item"><p class="text-sm text-dark-text mb-1">Общая площадь окон</p><p class="text-xl font-bold text-gold-highlight">${totalAreaRounded} м²</p></div>
                 <div class="bg-dark-card p-4 rounded-lg shadow-sm border border-gold result-item"><p class="text-sm text-dark-text mb-1">Площадь готового окна</p><p class="text-xl font-bold text-gold-highlight">${finishedAreaRounded} м²</p></div>
                 <div class="bg-dark-card p-4 rounded-lg shadow-sm border border-gold result-item"><p class="text-sm text-dark-text mb-1">Стоимость ПВХ окон</p><p class="text-xl font-bold text-gold-highlight">${pvcTotalPrice.toLocaleString()} руб</p></div>
                 <div class="bg-dark-card p-4 rounded-lg shadow-sm border border-gold result-item"><p class="text-sm text-dark-text mb-1">Стоимость ремешков</p><p class="text-xl font-bold text-gold-highlight">${strapCost.toLocaleString()} руб</p></div>
                 <div class="bg-dark-card p-4 rounded-lg shadow-sm border border-gold result-item"><p class="text-sm text-dark-text mb-1">Стоимость молнии</p><p class="text-xl font-bold text-gold-highlight">${zipperCost.toLocaleString()} руб</p></div>
-                <div class="bg-dark-card p-4 rounded-lg shadow-sm border border-gold result-item"><p class="text-sm text-dark-text mb-1">Предварительная стоимость без учета монтажа</p><p class="text-xl font-bold text-gold-highlight">${preliminaryCost.toLocaleString()} руб</p></div>
+                <div class="bg-dark-card p-4 rounded-lg shadow-sm border border-gold result-item"><p class="text-sm text-dark-text mb-1">Стоимость без учета монтажа</p><p class="text-xl font-bold text-gold-highlight">${preliminaryCost.toLocaleString()} руб</p></div>
                 ${mountingHTML}`;
            
             // Window Details
@@ -408,12 +407,19 @@
             // Summary Section (Доставка + Монтаж)
             summarySection.innerHTML = '';
             const totalWithDelivery = preliminaryCost + 1000;
-            let mountingDisplay = mountType === 'оба' ? `Дерево: ${woodMountingCost.toLocaleString()} руб / Металл: ${metalMountingCost.toLocaleString()} руб` : `${mountType === 'деревянная поверхность' ? woodMountingCost : metalMountingCost}.toLocaleString()} руб`;
+            let mountingDisplay;
+            if (mountType === 'оба') {
+                mountingDisplay = `Дерево: ${woodMountingCost.toLocaleString()} руб / Металл: ${metalMountingCost.toLocaleString()} руб`;
+            } else if (mountType === 'деревянная поверхность') {
+                mountingDisplay = `${woodMountingCost.toLocaleString()} руб`;
+            } else {
+                mountingDisplay = `${metalMountingCost.toLocaleString()} руб`;
+            }
             
             const summaryDiv = document.createElement('div');
             summaryDiv.className = 'bg-dark-card p-4 rounded-lg border-2 border-gold mt-4';
             summaryDiv.innerHTML = `<div class="text-white text-sm space-y-3">
-                <div class="flex justify-between items-center border-b border-gray-600 pb-2"><span>Предварительная стоимость:</span><span class="font-medium">${preliminaryCost.toLocaleString()} руб</span></div>
+                <div class="flex justify-between items-center border-b border-gray-600 pb-2"><span>Стоимость:</span><span class="font-medium">${preliminaryCost.toLocaleString()} руб</span></div>
                 <div class="flex justify-between items-center border-b border-gold pb-2"><span class="font-bold">Общая стоимость с доставкой:</span><span class="font-bold text-gold-highlight">${totalWithDelivery.toLocaleString()} руб</span></div>
                 <div class="flex justify-between items-center pt-1"><span>Стоимость монтажа${mountType !== 'оба' ? ' (' + mountType + ')' : ''}:</span><span class="font-medium text-gold-highlight">${mountingDisplay}</span></div>
             </div>`;
