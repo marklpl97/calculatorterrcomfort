@@ -303,7 +303,7 @@
             const adjustedArea = window.width * window.height * coefficient;
             let cost = adjustedArea * basePrice;
             
-            if (window.film === 'Тонированная' && window.fastening !== 'раздвижные шторы') cost *= 1.2;
+            
             if (window.fastening === 'раздвижные шторы') cost += window.width * curtainExtraPrice;
             
             return Math.round(cost);
