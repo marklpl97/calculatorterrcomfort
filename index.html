@@ -366,7 +366,7 @@
             let strapCost = 0;
             const hasNonEyelet = windows.some(w => w.fastening !== 'люверсы');
             if (hasNonEyelet) {
-                const rawStrapCost = (totalWidth / 0.67) * strapPrice[city];
+                const rawStrapCost = (totalWidth / 0.66) * strapPrice[city];
                 strapCost = roundToNearest100(rawStrapCost);
 }
             const zipperCost = Math.round(zipperLength * zipperPrice[city]);
