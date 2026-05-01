@@ -362,14 +362,13 @@
             const totalAreaRounded = Math.round(totalArea * 100) / 100;
             const finishedAreaRounded = Math.round((totalAreaRounded * coefficient) * 100) / 100;
            
-            // Стоимость ремешков (не считаем, если есть Полиуретан)
+            // БЫЛО:
             let strapCost = 0;
             const hasNonEyelet = windows.some(w => w.fastening !== 'люверсы');
-            const hasPolyurethane = windows.some(w => w.film === 'Полиуретан');
-            if (hasNonEyelet && !hasPolyurethane) {
-                strapCost = roundToNearest100((totalWidth / 0.6) * strapPrice[city]);
-            }
-           
+            if (hasNonEyelet) {
+                const rawStrapCost = (totalWidth / 0.67) * strapPrice[city];
+                strapCost = roundToNearest100(rawStrapCost);
+}
             const zipperCost = Math.round(zipperLength * zipperPrice[city]);
             const preliminaryCost = pvcTotalPrice + strapCost + zipperCost;
            
