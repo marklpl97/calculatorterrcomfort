@@ -386,10 +386,15 @@
            
             // Стоимость ремешков
             let strapCost = 0;
-            const hasNonEyelet = windows.some(w => w.fastening !== 'люверсы');
             const hasPolyurethane = windows.some(w => w.film === 'Полиуретан');
-            if (hasNonEyelet && !hasPolyurethane) {
-                strapCost = roundToNearest100((totalWidth / 0.66) * strapPrice[city]);
+
+            // 🆕 Считаем ремешки только для окон с крепежом ≠ люверсы
+            const nonEyeletWidth = windows
+                .filter(w => w.fastening !== 'люверсы')
+                .reduce((sum, w) => sum + w.width, 0);
+
+            if (nonEyeletWidth > 0 && !hasPolyurethane) {
+                strapCost = roundToNearest100((nonEyeletWidth / 0.66) * strapPrice[city]);
             }
            
             const zipperCost = Math.round(zipperLength * zipperPrice[city]);
