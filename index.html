@@ -394,7 +394,11 @@
                 .reduce((sum, w) => sum + w.width, 0);
 
             if (nonEyeletWidth > 0 && !hasPolyurethane) {
-                strapCost = roundToNearest100((nonEyeletWidth / 0.66) * strapPrice[city]);
+                // 🆕 Сначала округляем количество по правилам математики
+                const strapQtyRaw = nonEyeletWidth / 0.67;
+                const strapQtyCalculated = Math.round(strapQtyRaw);
+                // Потом считаем стоимость от округлённого количества
+                strapCost = strapQtyCalculated * strapPrice[city];
             }
            
             const zipperCost = Math.round(zipperLength * zipperPrice[city]);
@@ -473,7 +477,8 @@
             // Обновляем информацию о молнии и ремешках
             document.getElementById('zipperLengthDisplay').textContent = `${zipperLength} м`;
             document.getElementById('zipperCostDisplay').textContent = `${zipperCost.toLocaleString()} руб`;
-            const strapQty = totalWidth > 0 ? Math.ceil(totalWidth / 0.67) : 0;
+            // 🆕 Количество ремешков считаем только для окон БЕЗ люверсов, округляем по правилам
+            const strapQty = nonEyeletWidth > 0 ? Math.round(nonEyeletWidth / 0.67) : 0;
             document.getElementById('strapQtyDisplay').textContent = `${strapQty} шт`;
             document.getElementById('strapCostDisplay').textContent = `${strapCost.toLocaleString()} руб`;
            
