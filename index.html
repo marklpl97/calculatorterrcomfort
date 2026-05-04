@@ -104,6 +104,7 @@
                         <option value="оба">Оба</option>
                         <option value="деревянная поверхность">Деревянная поверхность</option>
                         <option value="металлическая поверхность">Металлическая поверхность</option>
+                        <option value="без монтажа">Без монтажа</option>
                     </select>
                 </div>
                 <!-- Zipper -->
@@ -118,6 +119,14 @@
                         <option value="нет">Нет</option><option value="да">Да</option>
                     </select>
                 </div>
+                <!-- Color Selection -->
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">Цвет люверсов</label>
+                    <select id="colorOption" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-base">
+                        <option value="хром">хром</option>
+                        <option value="черный">черный</option>
+                    </select>
+                </div>
                 <!-- Additional Cost -->
                 <div>
                     <label class="block text-sm font-semibold text-gray-700 mb-2">Доп. стоимость (руб)</label>
@@ -125,7 +134,7 @@
                 </div>
                 <!-- Additional Cost Category -->
                 <div>
-                    <label class="block text-sm font-semibold text-gray-700 mb-2">Применить к</label>
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">Доп.стоим.применить к</label>
                     <select id="additionalCostCategory" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-base">
                         <option value="windows">Стоимость окон</option>
                         <option value="mounting">Монтаж</option>
@@ -235,6 +244,7 @@
         const mountingMetalPrice = { 'Пенза': 800, 'Другие': 900, 'СПБ': 900 };
         const zipperPrice = { 'Пенза': 850, 'Другие': 850, 'СПБ': 850 };
         const curtainExtraPrice = 3500;
+        const blackColorSurcharge = 50; // доплата за чёрный цвет за м² (для всех окон)
 
         function roundToNearest100(value) { return Math.floor(value / 100) * 100; }
 
@@ -245,6 +255,7 @@
         const mountTypeSelect = document.getElementById('mountType');
         const zipperLengthInput = document.getElementById('zipperLength');
         const advancePaidSelect = document.getElementById('advancePaid');
+        const colorOptionSelect = document.getElementById('colorOption');
         const additionalCostInput = document.getElementById('additionalCost');
         const additionalCostCategorySelect = document.getElementById('additionalCostCategory');
         const dimensionsInputs = document.getElementById('dimensionsInputs');
@@ -308,12 +319,20 @@
             return windows;
         }
 
-        function calculateWindowCost(city, window, coefficient) {
+        function calculateWindowCost(city, window, coefficient, selectedColor) {
             let basePrice = priceData[city]?.[window.film]?.[window.fastening] || 0;
             if (window.fastening === 'раздвижные шторы') basePrice = 1950;
+            
             const adjustedArea = window.width * window.height * coefficient;
             let cost = adjustedArea * basePrice;
+            
+            // 🆕 Доплата за чёрный цвет: площадь × 50 руб (для ВСЕХ окон, независимо от крепежа)
+            if (selectedColor === 'черный') {
+                cost += window.width * window.height * blackColorSurcharge;
+            }
+            
             if (window.fastening === 'раздвижные шторы') cost += window.width * curtainExtraPrice;
+            
             return Math.round(cost);
         }
 
@@ -323,6 +342,7 @@
             const coefficient = parseFloat(coefficientInput.value) || 1.1;
             const additionalCost = parseFloat(additionalCostInput.value) || 0;
             const additionalCostCategory = additionalCostCategorySelect.value;
+            const selectedColor = colorOptionSelect.value; // хром или черный
            
             if (!city) {
                 resultsContainer.classList.add('hidden');
@@ -349,7 +369,7 @@
             windows.forEach(win => {
                 const area = win.width * win.height;
                 totalArea += area; totalWidth += win.width;
-                const cost = calculateWindowCost(city, win, coefficient);
+                const cost = calculateWindowCost(city, win, coefficient, selectedColor);
                 pvcTotalPrice += cost;
                 windowCosts.push({ ...win, cost, area });
             });
@@ -382,7 +402,6 @@
             if (additionalCostCategory === 'windows') {
                 adjustedPvcPrice += additionalCost;
             } else if (additionalCostCategory === 'mounting') {
-                // Добавляем к обоим вариантам монтажа
                 adjustedWoodMounting += additionalCost;
                 adjustedMetalMounting += additionalCost;
             }
@@ -395,7 +414,11 @@
            
             const mountType = mountTypeSelect.value;
             let mountingHTML = '';
-            if (mountType === 'оба') {
+            
+            if (mountType === 'без монтажа') {
+                // Не показываем блоки монтажа
+                mountingHTML = '';
+            } else if (mountType === 'оба') {
                 mountingHTML += `
                 <div class="bg-dark-card p-4 rounded-lg shadow-sm border border-gold result-item h-full flex flex-col justify-center">
                     <p class="text-sm text-dark-text mb-1">Монтаж на дерево (не менее ${minMountingCost.toLocaleString()} руб)</p>
@@ -422,7 +445,7 @@
             resultsGrid.innerHTML = `
                 <div class="bg-dark-card p-4 rounded-lg shadow-sm border border-gold result-item"><p class="text-sm text-dark-text mb-1">Общая площадь окон</p><p class="text-xl font-bold text-gold-highlight">${totalAreaRounded} м²</p></div>
                 <div class="bg-dark-card p-4 rounded-lg shadow-sm border border-gold result-item"><p class="text-sm text-dark-text mb-1">Площадь готового окна</p><p class="text-xl font-bold text-gold-highlight">${finishedAreaRounded} м²</p></div>
-                <div class="bg-dark-card p-4 rounded-lg shadow-sm border border-gold result-item"><p class="text-sm text-dark-text mb-1">Стоимость ПВХ окон${additionalCostCategory === 'windows' && additionalCost > 0 ? ' (+доп.)' : ''}</p><p class="text-xl font-bold text-gold-highlight">${adjustedPvcPrice.toLocaleString()} руб</p></div>
+                <div class="bg-dark-card p-4 rounded-lg shadow-sm border border-gold result-item"><p class="text-sm text-dark-text mb-1">Стоимость ПВХ окон${additionalCostCategory === 'windows' && additionalCost > 0 ? ' (+доп.)' : ''}${selectedColor === 'черный' ? ' (чёрные)' : ''}</p><p class="text-xl font-bold text-gold-highlight">${adjustedPvcPrice.toLocaleString()} руб</p></div>
                 <div class="bg-dark-card p-4 rounded-lg shadow-sm border border-gold result-item"><p class="text-sm text-dark-text mb-1">Стоимость ремешков</p><p class="text-xl font-bold text-gold-highlight">${strapCost.toLocaleString()} руб</p></div>
                 <div class="bg-dark-card p-4 rounded-lg shadow-sm border border-gold result-item"><p class="text-sm text-dark-text mb-1">Стоимость молнии</p><p class="text-xl font-bold text-gold-highlight">${zipperCost.toLocaleString()} руб</p></div>
                 <div class="bg-dark-card p-4 rounded-lg shadow-sm border border-gold result-item"><p class="text-sm text-dark-text mb-1">Стоимость без учета монтажа</p><p class="text-xl font-bold text-gold-highlight">${preliminaryCost.toLocaleString()} руб</p></div>
@@ -431,9 +454,14 @@
             // Window Details
             windowDetailsList.innerHTML = '';
             windowCosts.forEach((win, idx) => {
+                let fasteningText = win.fastening;
+                // Показываем цвет только для люверсов
+                if (win.fastening === 'люверсы') {
+                    fasteningText += selectedColor === 'черный' ? ' (черные)' : ' (хром)';
+                }
                 const div = document.createElement('div');
                 div.className = 'window-detail-card p-4 rounded-lg window-detail-item';
-                div.innerHTML = `<p class="text-dark-text text-sm"><span class="font-bold text-gold-highlight">Окно ${idx + 1}:</span><br>Ширина: <span class="font-medium">${win.width} м</span> | Высота: <span class="font-medium">${win.height} м</span><br>Пленка: <span class="font-medium">${win.film}</span> | Крепеж: <span class="font-medium">${win.fastening}</span><br>Стоимость: <span class="font-bold text-gold-highlight">${win.cost.toLocaleString()} руб</span></p>`;
+                div.innerHTML = `<p class="text-dark-text text-sm"><span class="font-bold text-gold-highlight">Окно ${idx + 1}:</span><br>Ширина: <span class="font-medium">${win.width} м</span> | Высота: <span class="font-medium">${win.height} м</span><br>Пленка: <span class="font-medium">${win.film}</span> | Крепеж: <span class="font-medium">${fasteningText}</span><br>Стоимость: <span class="font-bold text-gold-highlight">${win.cost.toLocaleString()} руб</span></p>`;
                 windowDetailsList.appendChild(div);
             });
             
@@ -447,8 +475,11 @@
             // Summary Section
             summarySection.innerHTML = '';
             const totalWithDelivery = preliminaryCost + 1000;
+            
             let mountingDisplay;
-            if (mountType === 'оба') {
+            if (mountType === 'без монтажа') {
+                mountingDisplay = 'Самомонтаж';
+            } else if (mountType === 'оба') {
                 mountingDisplay = `Дерево: ${adjustedWoodMounting.toLocaleString()} руб / Металл: ${adjustedMetalMounting.toLocaleString()} руб`;
             } else if (mountType === 'деревянная поверхность') {
                 mountingDisplay = `${adjustedWoodMounting.toLocaleString()} руб`;
@@ -461,7 +492,7 @@
             summaryDiv.innerHTML = `<div class="text-white text-sm space-y-3">
                 <div class="flex justify-between items-center border-b border-gray-600 pb-2"><span>Стоимость:</span><span class="font-medium">${preliminaryCost.toLocaleString()} руб</span></div>
                 <div class="flex justify-between items-center border-b border-gold pb-2"><span class="font-bold">Общая стоимость с доставкой:</span><span class="font-bold text-gold-highlight">${totalWithDelivery.toLocaleString()} руб</span></div>
-                <div class="flex justify-between items-center pt-1"><span>Стоимость монтажа${mountType !== 'оба' ? ' (' + mountType + ')' : ''}${additionalCostCategory === 'mounting' && additionalCost > 0 ? ' (+доп.)' : ''}:</span><span class="font-medium text-gold-highlight">${mountingDisplay}</span></div>
+                <div class="flex justify-between items-center pt-1"><span>Стоимость монтажа${mountType !== 'оба' && mountType !== 'без монтажа' ? ' (' + mountType + ')' : ''}${additionalCostCategory === 'mounting' && additionalCost > 0 ? ' (+доп.)' : ''}:</span><span class="font-medium text-gold-highlight">${mountingDisplay}</span></div>
             </div>`;
             summarySection.appendChild(summaryDiv);
            
@@ -538,6 +569,7 @@
         coefficientInput.addEventListener('input', calculateResults);
         mountTypeSelect.addEventListener('change', calculateResults);
         zipperLengthInput.addEventListener('input', calculateResults);
+        colorOptionSelect.addEventListener('change', calculateResults);
         additionalCostInput.addEventListener('input', calculateResults);
         additionalCostCategorySelect.addEventListener('change', calculateResults);
         advancePaidSelect.addEventListener('change', () => {
