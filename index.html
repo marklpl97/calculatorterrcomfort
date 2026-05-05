@@ -395,7 +395,7 @@
 
             if (nonEyeletWidth > 0 && !hasPolyurethane) {
                 // 🆕 Сначала округляем количество по правилам математики
-                const strapQtyRaw = nonEyeletWidth / 0.67;
+                const strapQtyRaw = nonEyeletWidth / 0.66;
                 const strapQtyCalculated = Math.round(strapQtyRaw);
                 // Потом считаем стоимость от округлённого количества
                 strapCost = strapQtyCalculated * strapPrice[city];
@@ -478,7 +478,7 @@
             document.getElementById('zipperLengthDisplay').textContent = `${zipperLength} м`;
             document.getElementById('zipperCostDisplay').textContent = `${zipperCost.toLocaleString()} руб`;
             // 🆕 Количество ремешков считаем только для окон БЕЗ люверсов, округляем по правилам
-            const strapQty = nonEyeletWidth > 0 ? Math.round(nonEyeletWidth / 0.67) : 0;
+            const strapQty = nonEyeletWidth > 0 ? Math.round(nonEyeletWidth / 0.66) : 0;
             document.getElementById('strapQtyDisplay').textContent = `${strapQty} шт`;
             document.getElementById('strapCostDisplay').textContent = `${strapCost.toLocaleString()} руб`;
            
