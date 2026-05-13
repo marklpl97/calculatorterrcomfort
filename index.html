@@ -226,25 +226,26 @@
             'Другие': {
                 'Прозрачная': { 'люверсы': 1600, 'пластиковые ремешки': 1750, 'полиамидные скобы': 1950, 'металлические скобы': 2050, 'французские замки': 2150, 'раздвижные шторы': 1950 },
                 'Тонированная': { 'люверсы': 1920, 'пластиковые ремешки': 2100, 'полиамидные скобы': 2340, 'металлические скобы': 2460, 'французские замки': 2580, 'раздвижные шторы': 1950 },
-                'Москитная сетка': { 'люверсы': 1500, 'пластиковые ремешки': 1500, 'полиамидные скобы': 1500, 'металлические скобы': 1500, 'французские замки': 1500, 'раздвижные шторы': 1500 },
-                'Полиуретан': { 'люверсы': 3300, 'пластиковые ремешки': 3300, 'полиамидные скобы': 3300, 'металлические скобы': 3300, 'французские замки': 3300, 'раздвижные шторы': 1950 },
+                'Москитная сетка': { 'люверсы': 1700, 'пластиковые ремешки': 1700, 'полиамидные скобы': 1700, 'металлические скобы': 1700, 'французские замки': 1700, 'раздвижные шторы': 1700 },
+                'Полиуретан': { 'люверсы': 3300, 'пластиковые ремешки': 3300, 'полиамидные скобы': 3300, 'металлические скобы': 3300, 'французские замки': 3300, 'раздвижные шторы': 3300 },
                 'Тент': { 'люверсы': 1300, 'пластиковые ремешки': 1500, 'полиамидные скобы': 1500, 'металлические скобы': 1500, 'французские замки': 1500, 'раздвижные шторы': 1500 }
             },
             'СПБ': {
-                'Прозрачная': { 'люверсы': 1600, 'пластиковые ремешки': 1750, 'полиамидные скобы': 1950, 'металлические скобы': 2050, 'французские замки': 2150, 'раздвижные шторы': 1950 },
-                'Тонированная': { 'люверсы': 1920, 'пластиковые ремешки': 2100, 'полиамидные скобы': 2340, 'металлические скобы': 2460, 'французские замки': 2580, 'раздвижные шторы': 1950 },
+                'Прозрачная': { 'люверсы': 1600, 'пластиковые ремешки': 1800, 'полиамидные скобы': 2100, 'металлические скобы': 2300, 'французские замки': 2500, 'раздвижные шторы': 2100 },
+                'Тонированная': { 'люверсы': 1760, 'пластиковые ремешки': 1980, 'полиамидные скобы': 2310, 'металлические скобы': 2530, 'французские замки': 2750, 'раздвижные шторы': 2310 },
                 'Москитная сетка': { 'люверсы': 1500, 'пластиковые ремешки': 1500, 'полиамидные скобы': 1500, 'металлические скобы': 1500, 'французские замки': 1500, 'раздвижные шторы': 1500 },
                 'Полиуретан': { 'люверсы': 3300, 'пластиковые ремешки': 3300, 'полиамидные скобы': 3300, 'металлические скобы': 3300, 'французские замки': 3300, 'раздвижные шторы': 1950 },
-                'Тент': { 'люверсы': 1300, 'пластиковые ремешки': 1500, 'полиамидные скобы': 1500, 'металлические скобы': 1500, 'французские замки': 1500, 'раздвижные шторы': 1500 }
+                'Тент': { 'люверсы': 1700, 'пластиковые ремешки': 1700, 'полиамидные скобы': 1700, 'металлические скобы': 1700, 'французские замки': 1700, 'раздвижные шторы': 1700 }
             }
         };
 
-        const strapPrice = { 'Пенза': 100, 'Другие': 100, 'СПБ': 100 };
-        const mountingWoodPrice = { 'Пенза': 600, 'Другие': 700, 'СПБ': 700 };
+        const strapPrice = { 'Пенза': 100, 'Другие': 100, 'СПБ': 150 };
+        const mountingWoodPrice = { 'Пенза': 600, 'Другие': 700, 'СПБ': 800 };
         const mountingMetalPrice = { 'Пенза': 800, 'Другие': 900, 'СПБ': 900 };
-        const zipperPrice = { 'Пенза': 850, 'Другие': 850, 'СПБ': 850 };
+        const zipperPrice = { 'Пенза': 850, 'Другие': 850, 'СПБ': 1500 };
         const curtainExtraPrice = 3500;
-        const blackColorSurcharge = 50; // доплата за чёрный цвет за м² (для всех окон)
+        const blackColorSurcharge = 50;
+        const deliveryPrice = { 'Пенза': 500, 'Другие': 1500, 'СПБ': 1500 }; // 🆕 Доставка по городам
 
         function roundToNearest100(value) { return Math.floor(value / 100) * 100; }
 
@@ -326,7 +327,6 @@
             const adjustedArea = window.width * window.height * coefficient;
             let cost = adjustedArea * basePrice;
             
-            // 🆕 Доплата за чёрный цвет: площадь × 50 руб (для ВСЕХ окон, независимо от крепежа)
             if (selectedColor === 'черный') {
                 cost += window.width * window.height * blackColorSurcharge;
             }
@@ -342,7 +342,7 @@
             const coefficient = parseFloat(coefficientInput.value) || 1.1;
             const additionalCost = parseFloat(additionalCostInput.value) || 0;
             const additionalCostCategory = additionalCostCategorySelect.value;
-            const selectedColor = colorOptionSelect.value; // хром или черный
+            const selectedColor = colorOptionSelect.value;
            
             if (!city) {
                 resultsContainer.classList.add('hidden');
@@ -384,20 +384,15 @@
             const totalAreaRounded = Math.round(totalArea * 100) / 100;
             const finishedAreaRounded = Math.round((totalAreaRounded * coefficient) * 100) / 100;
            
-            // Стоимость ремешков
+            // 🆕 Стоимость ремешков (теперь считается даже для Полиуретана!)
             let strapCost = 0;
-            const hasPolyurethane = windows.some(w => w.film === 'Полиуретан');
-
-            // 🆕 Считаем ремешки только для окон с крепежом ≠ люверсы
             const nonEyeletWidth = windows
                 .filter(w => w.fastening !== 'люверсы')
                 .reduce((sum, w) => sum + w.width, 0);
 
-            if (nonEyeletWidth > 0 && !hasPolyurethane) {
-                // 🆕 Сначала округляем количество по правилам математики
-                const strapQtyRaw = nonEyeletWidth / 0.66;
+            if (nonEyeletWidth > 0) {
+                const strapQtyRaw = nonEyeletWidth / 0.65;
                 const strapQtyCalculated = Math.round(strapQtyRaw);
-                // Потом считаем стоимость от округлённого количества
                 strapCost = strapQtyCalculated * strapPrice[city];
             }
            
@@ -425,7 +420,6 @@
             let mountingHTML = '';
             
             if (mountType === 'без монтажа') {
-                // Не показываем блоки монтажа
                 mountingHTML = '';
             } else if (mountType === 'оба') {
                 mountingHTML += `
@@ -464,7 +458,6 @@
             windowDetailsList.innerHTML = '';
             windowCosts.forEach((win, idx) => {
                 let fasteningText = win.fastening;
-                // Показываем цвет только для люверсов
                 if (win.fastening === 'люверсы') {
                     fasteningText += selectedColor === 'черный' ? ' (черные)' : ' (хром)';
                 }
@@ -477,14 +470,13 @@
             // Обновляем информацию о молнии и ремешках
             document.getElementById('zipperLengthDisplay').textContent = `${zipperLength} м`;
             document.getElementById('zipperCostDisplay').textContent = `${zipperCost.toLocaleString()} руб`;
-            // 🆕 Количество ремешков считаем только для окон БЕЗ люверсов, округляем по правилам
-            const strapQty = nonEyeletWidth > 0 ? Math.round(nonEyeletWidth / 0.66) : 0;
+            const strapQty = nonEyeletWidth > 0 ? Math.round(nonEyeletWidth / 0.65) : 0;
             document.getElementById('strapQtyDisplay').textContent = `${strapQty} шт`;
             document.getElementById('strapCostDisplay').textContent = `${strapCost.toLocaleString()} руб`;
            
-            // Summary Section
+            // 🆕 Summary Section — доставка по городам
             summarySection.innerHTML = '';
-            const totalWithDelivery = preliminaryCost + 1000;
+            const totalWithDelivery = preliminaryCost + deliveryPrice[city];
             
             let mountingDisplay;
             if (mountType === 'без монтажа') {
@@ -527,7 +519,7 @@
                 addInfoItem(`Стоимость москитной сетки: 1500 руб/м²`);
                 addInfoItem(`Стоимость двери из полиуретана: 3300 руб/м²`);
                 addInfoItem(`Стоимость подвесной шторы дополнительно к стоимости окна: 3500 руб/пог.м ширины окна`);
-                if(city === "Другие") addInfoItem(`Доставка СДЭК/Яндекс: 1000 руб`);
+                if(city === "Другие") addInfoItem(`Доставка СДЭК/Яндекс: 1500 руб`);
             }
             addInfoItem(`Монтаж на деревянную поверхность: ${mountingWoodPrice[city]} руб/м²`);
             addInfoItem(`Монтаж на металлическую поверхность: ${mountingMetalPrice[city]} руб/м²`);
