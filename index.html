@@ -504,10 +504,19 @@
             
             const summaryDiv = document.createElement('div');
             summaryDiv.className = 'bg-light-card p-4 rounded-lg border-2 border-gold mt-4';
-            summaryDiv.innerHTML = `<div class="text-light-text text-sm space-y-3">
-                <div class="flex justify-between items-center border-b border-gray-400 pb-2"><span>Стоимость:</span><span class="font-medium text-gold-highlight">${preliminaryCost.toLocaleString()} руб</span></div>
-                <div class="flex justify-between items-center border-b border-gold pb-2"><span class="font-bold">Общая стоимость с доставкой:</span><span class="font-bold text-gold-highlight">${totalWithDelivery.toLocaleString()} руб</span></div>
-                <div class="flex justify-between items-center pt-1"><span>Стоимость монтажа${mountType !== 'оба' && mountType !== 'без монтажа' ? ' (' + mountType + ')' : ''}${additionalCostCategory === 'mounting' && additionalCost > 0 ? ' (+доп.)' : ''}:</span><span class="font-bold text-gold-highlight">${mountingDisplay}</span></div>
+            summaryDiv.innerHTML = `<div class="text-[#3E2723] text-base space-y-4">
+                <div class="flex justify-between items-center border-b border-[#8D6E63] pb-3">
+                    <span class="font-semibold text-[#3E2723]">Стоимость:</span>
+                    <span class="font-bold text-lg text-[#3E2723]">${preliminaryCost.toLocaleString()} руб</span>
+                </div>
+                <div class="flex justify-between items-center border-b border-[#C9A961] pb-3">
+                    <span class="font-bold text-[#3E2723]">Общая стоимость с доставкой:</span>
+                    <span class="font-bold text-lg text-[#3E2723]">${totalWithDelivery.toLocaleString()} руб</span>
+                </div>
+                <div class="flex justify-between items-center pt-2">
+                    <span class="font-semibold text-[#3E2723]">Стоимость монтажа${mountType !== 'оба' && mountType !== 'без монтажа' ? ' (' + mountType + ')' : ''}${additionalCostCategory === 'mounting' && additionalCost > 0 ? ' (+доп.)' : ''}:</span>
+                    <span class="font-bold text-lg text-[#3E2723]">${mountingDisplay}</span>
+                </div>
             </div>`;
             summarySection.appendChild(summaryDiv);
            
