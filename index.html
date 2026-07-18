@@ -68,6 +68,54 @@
             border-radius: 16px;
             overflow: hidden;
         }
+        .dimension-row {
+            position: relative;
+            padding-right: 50px;
+        }
+        .remove-row-btn {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: #ef4444;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            font-size: 18px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+        .remove-row-btn:hover {
+            background: #dc2626;
+            transform: translateY(-50%) scale(1.1);
+        }
+        .add-row-btn {
+            background: #22c55e;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            font-size: 24px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+            margin: 0 auto;
+        }
+        .add-row-btn:hover {
+            background: #16a34a;
+            transform: scale(1.05);
+        }
+        .dimension-row .grid {
+            padding-right: 10px;
+        }
     </style>
 </head>
 <body class="min-h-screen bg-gradient-to-br from-brown-light to-brown-medium p-4">
@@ -144,7 +192,10 @@
             </div>
             <!-- Dimensions Input -->
             <div id="dimensionsContainer" class="mb-8">
-                <h3 class="text-lg font-semibold text-gray-800 mb-4">Размеры окон (м)</h3>
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-lg font-semibold text-gray-800">Размеры окон (м)</h3>
+                    <button id="addRowBtn" class="add-row-btn" title="Добавить окно">+</button>
+                </div>
                 <div id="dimensionsInputs" class="space-y-4"></div>
             </div>
             <!-- Download PDF Button -->
@@ -275,57 +326,132 @@
         const qrSection = document.getElementById('qrSection');
         const windowDetailsList = document.getElementById('windowDetailsList');
         const summarySection = document.getElementById('summarySection');
+        const addRowBtn = document.getElementById('addRowBtn');
 
+        let windowCount = 1;
 
         function toggleQRCode() {
             advancePaidSelect.value === 'да' ? qrSection.classList.remove('hidden') : qrSection.classList.add('hidden');
         }
 
-
-        function initializeDimensions() {
-            const count = parseInt(windowCountSelect.value);
-            dimensionsInputs.innerHTML = '';
-            for (let i = 0; i < count; i++) {
-                const div = document.createElement('div');
-                div.className = 'grid grid-cols-1 md:grid-cols-4 gap-2 p-4 bg-brown-light rounded-lg border border-brown-medium';
-                div.innerHTML = `
-                    <div><label class="block text-sm font-medium text-gray-700 mb-1">Ширина ${i + 1} (м)</label>
-                        <input type="number" step="0.01" data-index="${i}" data-field="width" class="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brown-dark dimension-input" placeholder="0.00" min="0"></div>
-                    <div><label class="block text-sm font-medium text-gray-700 mb-1">Высота ${i + 1} (м)</label>
-                        <input type="number" step="0.01" data-index="${i}" data-field="height" class="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brown-dark dimension-input" placeholder="0.00" min="0"></div>
-                    <div><label class="block text-sm font-medium text-gray-700 mb-1">Пленка ${i + 1}</label>
-                        <select data-index="${i}" data-field="film" class="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brown-dark dimension-film">
-                            <option value="">Выберите</option>
-                            <option value="Прозрачная">Прозрачная</option><option value="Тонированная">Тонированная</option>
-                            <option value="Москитная сетка">Москитная сетка</option><option value="Полиуретан">Полиуретан</option>
-                            <option value="Тент">Тент</option>
-                        </select></div>
-                    <div><label class="block text-sm font-medium text-gray-700 mb-1">Крепеж ${i + 1}</label>
-                        <select data-index="${i}" data-field="fastening" class="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brown-dark dimension-fastening">
-                            <option value="">Выберите</option>
-                            <option value="люверсы">люверсы</option><option value="пластиковые ремешки">пластиковые ремешки</option>
-                            <option value="полиамидные скобы">полиамидные скобы</option><option value="металлические скобы">металлические скобы</option>
-                            <option value="французские замки">французские замки</option><option value="раздвижные шторы">раздвижные шторы</option>
-                        </select></div>`;
-                dimensionsInputs.appendChild(div);
-            }
-            document.querySelectorAll('.dimension-input, .dimension-film, .dimension-fastening').forEach(input => {
+        function createDimensionRow(index) {
+            const div = document.createElement('div');
+            div.className = 'dimension-row grid grid-cols-1 md:grid-cols-4 gap-2 p-4 bg-brown-light rounded-lg border border-brown-medium';
+            div.dataset.index = index;
+            div.innerHTML = `
+                <div><label class="block text-sm font-medium text-gray-700 mb-1">Ширина ${index + 1} (м)</label>
+                    <input type="number" step="0.01" data-index="${index}" data-field="width" class="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brown-dark dimension-input" placeholder="0.00" min="0"></div>
+                <div><label class="block text-sm font-medium text-gray-700 mb-1">Высота ${index + 1} (м)</label>
+                    <input type="number" step="0.01" data-index="${index}" data-field="height" class="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brown-dark dimension-input" placeholder="0.00" min="0"></div>
+                <div><label class="block text-sm font-medium text-gray-700 mb-1">Пленка ${index + 1}</label>
+                    <select data-index="${index}" data-field="film" class="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brown-dark dimension-film">
+                        <option value="">Выберите</option>
+                        <option value="Прозрачная">Прозрачная</option><option value="Тонированная">Тонированная</option>
+                        <option value="Москитная сетка">Москитная сетка</option><option value="Полиуретан">Полиуретан</option>
+                        <option value="Тент">Тент</option>
+                    </select></div>
+                <div><label class="block text-sm font-medium text-gray-700 mb-1">Крепеж ${index + 1}</label>
+                    <select data-index="${index}" data-field="fastening" class="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brown-dark dimension-fastening">
+                        <option value="">Выберите</option>
+                        <option value="люверсы">люверсы</option><option value="пластиковые ремешки">пластиковые ремешки</option>
+                        <option value="полиамидные скобы">полиамидные скобы</option><option value="металлические скобы">металлические скобы</option>
+                        <option value="французские замки">французские замки</option><option value="раздвижные шторы">раздвижные шторы</option>
+                    </select></div>
+                <button class="remove-row-btn" data-index="${index}" title="Удалить окно">×</button>
+            `;
+            
+            // Add event listeners to inputs
+            div.querySelectorAll('.dimension-input, .dimension-film, .dimension-fastening').forEach(input => {
                 input.addEventListener('input', calculateResults);
+            });
+            
+            // Add remove button listener
+            const removeBtn = div.querySelector('.remove-row-btn');
+            removeBtn.addEventListener('click', function() {
+                const idx = parseInt(this.dataset.index);
+                removeDimensionRow(idx);
+            });
+            
+            return div;
+        }
+
+        function removeDimensionRow(index) {
+            const rows = dimensionsInputs.querySelectorAll('.dimension-row');
+            if (rows.length <= 1) {
+                alert('Нельзя удалить последнее окно. Минимальное количество - 1.');
+                return;
+            }
+            
+            // Remove the row
+            const rowToRemove = dimensionsInputs.querySelector(`.dimension-row[data-index="${index}"]`);
+            if (rowToRemove) {
+                rowToRemove.remove();
+                // Re-index remaining rows
+                reindexRows();
+                // Update window count select
+                updateWindowCountSelect();
+                calculateResults();
+            }
+        }
+
+        function reindexRows() {
+            const rows = dimensionsInputs.querySelectorAll('.dimension-row');
+            rows.forEach((row, newIndex) => {
+                row.dataset.index = newIndex;
+                // Update labels
+                const labels = row.querySelectorAll('label');
+                labels.forEach(label => {
+                    label.textContent = label.textContent.replace(/\d+/, newIndex + 1);
+                });
+                // Update data-index on inputs and selects
+                row.querySelectorAll('.dimension-input, .dimension-film, .dimension-fastening').forEach(el => {
+                    el.dataset.index = newIndex;
+                });
+                // Update remove button
+                const removeBtn = row.querySelector('.remove-row-btn');
+                if (removeBtn) {
+                    removeBtn.dataset.index = newIndex;
+                }
             });
         }
 
+        function updateWindowCountSelect() {
+            const currentCount = dimensionsInputs.querySelectorAll('.dimension-row').length;
+            // Update the select value without triggering change event
+            windowCountSelect.value = currentCount;
+            // Update windowCount variable
+            windowCount = currentCount;
+        }
+
+        function addDimensionRow() {
+            const currentCount = dimensionsInputs.querySelectorAll('.dimension-row').length;
+            const newIndex = currentCount;
+            const newRow = createDimensionRow(newIndex);
+            dimensionsInputs.appendChild(newRow);
+            updateWindowCountSelect();
+            calculateResults();
+        }
+
+        function initializeDimensions() {
+            dimensionsInputs.innerHTML = '';
+            // Create initial row
+            const initialRow = createDimensionRow(0);
+            dimensionsInputs.appendChild(initialRow);
+            windowCount = 1;
+            windowCountSelect.value = 1;
+        }
 
         function getWindowData() {
             const windows = [];
-            const count = parseInt(windowCountSelect.value);
-            for (let i = 0; i < count; i++) {
+            const rows = dimensionsInputs.querySelectorAll('.dimension-row');
+            rows.forEach((row, index) => {
                 windows.push({
-                    width: parseFloat(document.querySelector(`.dimension-input[data-index="${i}"][data-field="width"]`)?.value) || 0,
-                    height: parseFloat(document.querySelector(`.dimension-input[data-index="${i}"][data-field="height"]`)?.value) || 0,
-                    film: document.querySelector(`.dimension-film[data-index="${i}"]`)?.value || '',
-                    fastening: document.querySelector(`.dimension-fastening[data-index="${i}"]`)?.value || ''
+                    width: parseFloat(row.querySelector(`.dimension-input[data-index="${index}"][data-field="width"]`)?.value) || 0,
+                    height: parseFloat(row.querySelector(`.dimension-input[data-index="${index}"][data-field="height"]`)?.value) || 0,
+                    film: row.querySelector(`.dimension-film[data-index="${index}"]`)?.value || '',
+                    fastening: row.querySelector(`.dimension-fastening[data-index="${index}"]`)?.value || ''
                 });
-            }
+            });
             return windows;
         }
 
@@ -368,7 +494,7 @@
             for (const win of windows) {
                 if (win.width <= 0 || win.height <= 0 || !win.film || !win.fastening) { allValid = false; break; }
             }
-            if (!allValid) {
+            if (!allValid || windows.length === 0) {
                 resultsContainer.classList.add('hidden');
                 noResultsMessage.classList.remove('hidden');
                 pdfDownloadBtnWrapper.classList.add('hidden');
@@ -521,11 +647,6 @@
             summarySection.appendChild(summaryDiv);
            
             // Additional Info
-
-
-
-
-            
             infoList.innerHTML = '';
             function addInfoItem(text) {
                 const li = document.createElement('li');
@@ -595,7 +716,27 @@
        
         // Event Listeners
         citySelect.addEventListener('change', calculateResults);
-        windowCountSelect.addEventListener('change', () => { initializeDimensions(); calculateResults(); });
+        windowCountSelect.addEventListener('change', function() {
+            const newCount = parseInt(this.value);
+            const currentCount = dimensionsInputs.querySelectorAll('.dimension-row').length;
+            if (newCount > currentCount) {
+                for (let i = currentCount; i < newCount; i++) {
+                    const newRow = createDimensionRow(i);
+                    dimensionsInputs.appendChild(newRow);
+                }
+            } else if (newCount < currentCount) {
+                // Remove rows from the end
+                const rows = dimensionsInputs.querySelectorAll('.dimension-row');
+                for (let i = currentCount - 1; i >= newCount; i--) {
+                    if (rows[i]) {
+                        rows[i].remove();
+                    }
+                }
+                reindexRows();
+            }
+            windowCount = newCount;
+            calculateResults();
+        });
         coefficientInput.addEventListener('input', calculateResults);
         mountTypeSelect.addEventListener('change', calculateResults);
         zipperLengthInput.addEventListener('input', calculateResults);
@@ -607,6 +748,7 @@
             if (!resultsContainer.classList.contains('hidden')) calculateResults();
         });
         downloadPdfBtn.addEventListener('click', generatePDF);
+        addRowBtn.addEventListener('click', addDimensionRow);
        
         initializeDimensions();
         document.addEventListener('input', function(e) {
